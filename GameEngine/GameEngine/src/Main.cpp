@@ -85,7 +85,7 @@ int main() {
   scene1.settings.background_color = Color255(51);
   scene1.settings.anti_aliasing = 1;
   // Animation settings.
-  scene1.settings.frame_count = 30;
+  scene1.settings.frame_count = 1;
   scene1.settings.should_write_to_file = true;
   scene1.settings.output_folder = "animation_0";
 

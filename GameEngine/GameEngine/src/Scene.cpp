@@ -11,7 +11,7 @@
 
 #include "Light.h"
 
-Scene::Scene(std::shared_ptr<Renderer> renderer)
+Scene::Scene(std::shared_ptr<MyRenderer> renderer)
   : m_renderer{ std::move(renderer) } {
   // Make sure that a valid renderer was added.
   assert(m_renderer);

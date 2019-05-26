@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "Camera.h"
-#include "Renderer.h"
+#include "MyRenderer.h"
 #include "Object.h"
 #include "Color.h"
 
@@ -28,10 +28,10 @@ public:
   // XXX: Not sure if they should be unique or shared pointers.
   std::vector<std::shared_ptr<Object>> objects;
 private:
-  std::shared_ptr<Renderer> m_renderer;
+  std::shared_ptr<MyRenderer> m_renderer;
 
 public:
-  explicit Scene(std::shared_ptr<Renderer> renderer);
+  explicit Scene(std::shared_ptr<MyRenderer> renderer);
   void render();
 
 private:

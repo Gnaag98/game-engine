@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include "Rasterizer.h"
-#include "Renderer.h"
+#include "MyRenderer.h"
 
 #include <array>
 #include <vector>
@@ -22,7 +22,7 @@
 
 #include "ThreadPool.h"
 
-Rasterizer::Rasterizer(int thread_count) : Renderer{thread_count} {}
+Rasterizer::Rasterizer(int thread_count) : MyRenderer{thread_count} {}
 
 void Rasterizer::render_object(const Object& object,
                                const Camera& camera,

@@ -8,7 +8,7 @@
 #include "Camera.h"
 #include "ThreadPool.h"
 
-class Renderer {
+class MyRenderer {
 protected:
   ThreadPool m_thread_pool;
   std::queue<std::future<void>> futures;
@@ -16,9 +16,9 @@ protected:
   mutable std::mutex triangle_mutex;
 
 protected:
-  explicit Renderer(const int thread_count);
+  explicit MyRenderer(const int thread_count);
 public:
-  virtual ~Renderer() = default;
+  virtual ~MyRenderer() = default;
 
 public:
   virtual void render_object(const Object& object,
