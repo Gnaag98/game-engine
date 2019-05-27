@@ -22,7 +22,7 @@
 
 #include "ThreadPool.h"
 
-Rasterizer::Rasterizer(int thread_count) : MyRenderer{thread_count} {}
+Rasterizer::Rasterizer(int thread_count) : MyRenderer{ thread_count } {}
 
 void Rasterizer::render_object(const Object& object,
                                const Camera& camera,
