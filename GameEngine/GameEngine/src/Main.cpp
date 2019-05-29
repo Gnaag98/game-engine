@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES
-
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -9,6 +7,9 @@
 
 #include <chrono>
 #include <ratio>
+
+#include <GL\glew.h>
+#include <GLFW\glfw3.h>
 
 #include "Scene.h"
 #include "Rasterizer.h"
@@ -24,6 +25,14 @@
 #include "Color.h"
 
 #include "Vec3.h"
+
+#include "Renderer.h"
+
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "Shader.h"
+#include "Texture.h"
 
 void create_objects(Scene& scene) {
   // 3x3 grid of cubes.
@@ -85,7 +94,7 @@ int main() {
   scene1.settings.background_color = Color255(51);
   scene1.settings.anti_aliasing = 1;
   // Animation settings.
-  scene1.settings.frame_count = 30;
+  scene1.settings.frame_count = 1;
   scene1.settings.should_write_to_file = true;
   scene1.settings.output_folder = "animation_0";
 
@@ -97,7 +106,7 @@ int main() {
 
     // TODO: Replace with keyframes on the camera object.
     camera->transform.translate(Vec3f(2, 2, 2));
-    camera->transform.rotate(Vec3f(-std::atan(1.0 / sqrt(2)), M_PI_4, 0));
+    camera->transform.rotate(Vec3f(float(-std::atan(1.0 / sqrt(2))), float(M_PI_4), 0));
 
     scene1.objects.push_back(camera);
     scene1.main_camera = camera;
@@ -120,8 +129,8 @@ int main() {
   //std::cout << "Done creating Keyframes.\n";
   
   // Render scene.
-  scene1.render();
+  return scene1.render();
 
-  std::cout << "Press Enter to exit.";
-  std::cin.get();
+  //std::cout << "Press Enter to exit.";
+  //std::cin.get();
 }

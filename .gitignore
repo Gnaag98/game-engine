@@ -328,3 +328,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/GameEngine/GameEngine/out/animation_0/frame_0.ppm

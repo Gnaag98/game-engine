@@ -1,0 +1,3 @@
+# Prevent important folders from being ignored due to .gitignore rules in root folder.
+![Bb]in/
+![Ll]ib/

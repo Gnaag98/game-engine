@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Renderer.h"
+#include "MyRenderer.h"
 
 #include <array>
 #include <vector>
@@ -14,7 +14,7 @@
 #include "ThreadPool.h"
 #include "Object.h"
 
-class Rasterizer : public Renderer {
+class Rasterizer : public MyRenderer {
 public:
   Rasterizer(int thread_count);
 

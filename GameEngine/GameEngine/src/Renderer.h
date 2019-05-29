@@ -1,31 +1,22 @@
 #pragma once
 
-#include <vector>
-#include <queue>
-#include <future>
-#include <mutex>
+#include <GL/glew.h>
 
-#include "Camera.h"
-#include "ThreadPool.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "Shader.h"
+
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define CALL_GL(x) gl_clear_error();\
+  x;\
+  ASSERT(gl_log_call(#x, __FILE__, __LINE__))
+
+void gl_clear_error();
+auto gl_log_call(const char* function, const char* file, int line)->bool;
 
 class Renderer {
-protected:
-  ThreadPool m_thread_pool;
-  std::queue<std::future<void>> futures;
-  // IDEA: Change mutex name.
-  mutable std::mutex triangle_mutex;
-
-protected:
-  explicit Renderer(const int thread_count);
 public:
-  virtual ~Renderer() = default;
-
-public:
-  virtual void render_object(const Object& object,
-                             const Camera& camera,
-                             std::vector<float>& depth_buffer,
-                             std::vector<Color255>& frame_buffer,
-                             std::vector<Color>& subpixel_buffer,
-                             const int image_width, const int image_height,
-                             const int anti_aliasing) = 0;
+  void clear() const;
+  void draw(const VertexArray& vertex_array, const IndexBuffer& index_buffer,
+            const Shader& shader) const;
 };
