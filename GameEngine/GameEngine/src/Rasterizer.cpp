@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES
-
 #include "Rasterizer.h"
 #include "MyRenderer.h"
 
@@ -103,7 +101,7 @@ void Rasterizer::render_triangle(const Triangle& triangle,
   };
 
   // Experimental lights.
-  Vec3f light_direction(-3, -0.7, -1.7);
+  Vec3f light_direction(-3.0f, -0.7f, -1.7f);
   light_direction.normalize();
 
   // Diffuse surface color.
@@ -114,8 +112,8 @@ void Rasterizer::render_triangle(const Triangle& triangle,
   // Simplified version (without albeto and intensity).
   float diffusion = std::max(0.0f, normals_world[0].dot(-light_direction));
 
-  std::cout << "\n  Normal:\t\t" << normals_world[0] << '\n' << "  Light direction:\t" << light_direction << '\n';
-  std::cout << "  Diffusion\t\t: " << diffusion << "\n\n";
+  //std::cout << "\n  Normal:\t\t" << normals_world[0] << '\n' << "  Light direction:\t" << light_direction << '\n';
+  //std::cout << "  Diffusion\t\t: " << diffusion << "\n\n";
 
   std::array<Color, 3> colors = {
     triangle.verticies[0]->color,

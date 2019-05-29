@@ -5,13 +5,13 @@
 
 class Keyframe {
 public:
-  int frame;
+  unsigned int frame;
   Transform transform;
 
 public:
   Keyframe();
-  Keyframe(const int frame, const Transform& transform);
-  Keyframe(const int frame, Transform&& transform);
+  Keyframe(const unsigned int frame, const Transform& transform);
+  Keyframe(const unsigned int frame, Transform&& transform);
 
-  static Transform lerp(const Keyframe& start, const Keyframe& end, int frame);
+  static Transform lerp(const Keyframe& start, const Keyframe& end, unsigned int frame);
 };

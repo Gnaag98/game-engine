@@ -9,19 +9,19 @@ Keyframe::Keyframe() : frame(0), transform() {
   std::cout << "[Keyframe] Default constructor.\n";
 }
 
-Keyframe::Keyframe(const int f, const Transform& t)
+Keyframe::Keyframe(const unsigned int f, const Transform& t)
   : frame(f), transform(t) {
   std::cout << "[Keyframe] Parameter constructor.\n";
 }
 
 // Move-optimized constructor for rvalues.
-Keyframe::Keyframe(const int f, Transform&& t)
+Keyframe::Keyframe(const unsigned int f, Transform&& t)
   : frame(f), transform(std::move(t)) {
   std::cout << "[Keyframe] Parameter constructor (Move optimized).\n";
 }
 
 Transform Keyframe::lerp(const Keyframe& start, const Keyframe& end,
-                         const int frame) {
+                         const unsigned int frame) {
   //std::cout << "Lerping keyframe...\n";
   Transform transform;
 

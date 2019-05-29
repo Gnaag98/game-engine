@@ -15,6 +15,7 @@ void gl_clear_error();
 auto gl_log_call(const char* function, const char* file, int line)->bool;
 
 class Renderer {
+public:
   void clear() const;
   void draw(const VertexArray& vertex_array, const IndexBuffer& index_buffer,
             const Shader& shader) const;
