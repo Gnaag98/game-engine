@@ -24,8 +24,8 @@ public:
   void unbind() const;
 
   void set_uniform1i(const std::string& name, int value);
-  void set_uniform1f(const std::string& name, int value);
-  void set_uniform4f(const std::string& name, int v0, int v1, int v2, int v3);
+  void set_uniform1f(const std::string& name, float value);
+  void set_uniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 private:
   auto parse_shader(const std::string& file_path) const->ShaderProgramSource;
   auto compile_shader(unsigned int type, const std::string& source) const->unsigned int;

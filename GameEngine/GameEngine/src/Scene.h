@@ -32,10 +32,14 @@ private:
 
 public:
   explicit Scene(std::shared_ptr<MyRenderer> renderer);
-  void render();
+  int render();
 
 private:
-  void write_to_file(const int frame,
+  void render_frame(std::vector<Color255>& frame_buffer,
+                                     std::vector<Color>& subpixel_buffer,
+                                     std::vector<float>& depth_buffer,
+                                     const Camera& camera);
+  void write_frame_to_file(const int frame,
                      const std::vector<Color255>& frame_buffer) const;
   void reset_image(std::vector<Color255>& frame_buffer,
                    std::vector<Color>& subpixel_buffer,

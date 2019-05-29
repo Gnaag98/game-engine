@@ -29,11 +29,11 @@ void Shader::set_uniform1i(const std::string& name, int value) {
   CALL_GL(glUniform1i(get_uniform_location(name), value));
 }
 
-void Shader::set_uniform1f(const std::string& name, int value) {
+void Shader::set_uniform1f(const std::string& name, float value) {
   CALL_GL(glUniform1f(get_uniform_location(name), value));
 }
 
-void Shader::set_uniform4f(const std::string& name, int v0, int v1, int v2, int v3) {
+void Shader::set_uniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
   CALL_GL(glUniform4f(get_uniform_location(name), v0, v1, v2, v3));
 }
 
