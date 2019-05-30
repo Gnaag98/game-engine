@@ -86,34 +86,34 @@ int main() {
   auto rasterizer = std::make_shared<Rasterizer>(4);
 
   // Scenes.
-  auto scene1 = Scene{ rasterizer };
+  auto scene = Scene{ rasterizer };
 
   // Image settings.
-  scene1.settings.image_width = 256;
-  scene1.settings.image_height = 256;
-  scene1.settings.background_color = Color255(51);
-  scene1.settings.anti_aliasing = 1;
+  scene.settings.image_width = 256;
+  scene.settings.image_height = 256;
+  scene.settings.background_color = Color255(51);
+  scene.settings.anti_aliasing = 1;
   // Animation settings.
-  scene1.settings.frame_count = 1;
-  scene1.settings.should_write_to_file = true;
-  scene1.settings.output_folder = "animation_0";
+  scene.settings.frame_count = 1;
+  scene.settings.should_write_to_file = true;
+  scene.settings.output_folder = "animation_0";
 
   // Camera.
   { // Scoped since I don't need to keep ownership of the camera. 
     auto camera = std::make_shared<Camera>();
     camera->fov(70.0f);
-    camera->aspect_ratio((float)scene1.settings.image_width / (float)scene1.settings.image_height);
+    camera->aspect_ratio((float)scene.settings.image_width / (float)scene.settings.image_height);
 
     // TODO: Replace with keyframes on the camera object.
     camera->transform.translate(Vec3f(2, 2, 2));
     camera->transform.rotate(Vec3f(float(-std::atan(1.0 / sqrt(2))), float(M_PI_4), 0));
 
-    scene1.objects.push_back(camera);
-    scene1.main_camera = camera;
+    scene.objects.push_back(camera);
+    scene.main_camera = camera;
   }
 
   // Add objects to the scene.
-  create_objects(scene1);
+  create_objects(scene);
 
   // TODO: Create keyframes for individual objects instead.
   //// Camera animation.
@@ -129,7 +129,7 @@ int main() {
   //std::cout << "Done creating Keyframes.\n";
   
   // Render scene.
-  return scene1.render();
+  return scene.render();
 
   //std::cout << "Press Enter to exit.";
   //std::cin.get();

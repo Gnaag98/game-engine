@@ -26,7 +26,7 @@ Scene::Scene(std::shared_ptr<MyRenderer> renderer)
   assert(m_renderer);
 }
 
-int Scene::render() {
+auto Scene::render()->int {
   // Unnecessary as I assert in the constructor, but better safe than sorry.
   if (!m_renderer) {
     std::cerr << "No renderer specified. Can't render scene as a result.\n";
@@ -137,16 +137,14 @@ int Scene::render() {
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
+      update();
+      draw(frame_buffer, subpixel_buffer, depth_buffer, *camera);
+
       /* Render here */
       renderer.clear();
 
       shader.bind();
-
-      render_frame(frame_buffer, subpixel_buffer, depth_buffer, *camera);
-
       Texture texture{ frame_buffer, settings.image_width, settings.image_height };
-
-
       texture.bind();
       shader.set_uniform1i("u_texture", 0);
 
@@ -164,26 +162,36 @@ int Scene::render() {
   return 0;
 }
 
-void Scene::render_frame(std::vector<Color255>& frame_buffer,
-                                          std::vector<Color>& subpixel_buffer, 
-                                          std::vector<float>& depth_buffer,
-                                          const Camera& camera) {
+// Movement, animation, physics, etc.
+void Scene::update() {
+  // TODO: Add animation control.
+
+  for (auto& object : objects) {
+    if (object->mesh) {
+      // TEMP: Rotation.
+      object->transform.rotate({ 0, float(M_PI * 2.0 / 60.0), 0 });
+    }
+  }
+}
+
+void Scene::draw(std::vector<Color255>& frame_buffer,
+                 std::vector<Color>& subpixel_buffer,
+                 std::vector<float>& depth_buffer,
+                 const Camera& camera) {
   reset_image(frame_buffer, subpixel_buffer, depth_buffer);
   for (auto& object : objects) {
-    if (!object->mesh) continue;
-    // TEMP: Rotation.
-    object->transform.rotate({ 0, float(M_PI * 2.0 / 60.0), 0 });
-
-    camera.project_object(*object, settings.image_width, settings.image_height);
-    m_renderer->render_object(*object, camera,
-                              depth_buffer, frame_buffer, subpixel_buffer,
-                              settings.image_width, settings.image_height,
-                              settings.anti_aliasing);
+    if (object->mesh) {
+      camera.project_object(*object, settings.image_width, settings.image_height);
+      m_renderer->render_object(*object, camera,
+                                depth_buffer, frame_buffer, subpixel_buffer,
+                                settings.image_width, settings.image_height,
+                                settings.anti_aliasing);
+    }
   }
 }
 
 void Scene::write_frame_to_file(const int frame,
-                          const std::vector<Color255>& frame_buffer) const {
+                                const std::vector<Color255>& frame_buffer) const {
   std::ofstream ofs_ppm(std::string("./out/") + settings.output_folder +
                         "/frame_" + std::to_string(frame) + ".ppm",
                         std::ios::binary);
