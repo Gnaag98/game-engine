@@ -4,13 +4,13 @@
 #include <memory>
 
 #include "Transform.h"
-#include "Keyframe.h"
+#include "Animation.h"
 #include "Mesh.h"
 
 class Object {
 public:
   Transform transform;
-  std::vector<Keyframe> keyframes;
+  std::unique_ptr<Animation> animation;
   // TODO: implement logic for objects having children and/or parents.
   //std::vector<Object> children;
   std::shared_ptr<Mesh> mesh;

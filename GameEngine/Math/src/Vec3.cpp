@@ -30,12 +30,12 @@ Vec3f& Vec3f::operator-=(const Vec3f& other) {
 }
 
 Vec3f& Vec3f::operator*=(const float scalar){
-  x *= scalar;
+  x *= scalar, y *= scalar, z *= scalar;
   return *this;
 }
 
 Vec3f& Vec3f::operator/=(const float scalar) {
-  x /= scalar;
+  x /= scalar, y /= scalar, z /= scalar;
   return *this;
 }
 

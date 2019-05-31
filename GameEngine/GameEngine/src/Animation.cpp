@@ -1,8 +1,10 @@
 #include "Animation.h"
 
-Transform Animation::next_frame() {
-  Transform result;
-  if (keyframes.size() > 0) {
+#include <stdexcept>
+
+Transform Animation::step() {
+  auto result = Transform{};
+  if (!keyframes.empty()) {
     if (current_keyframe == 0) {
       result = keyframes[0].transform;
       if (keyframes.size() > 1) {
@@ -11,13 +13,13 @@ Transform Animation::next_frame() {
       return result;
     } else if (current_keyframe < keyframes.size()) {
       ++current_frame;
-      if (current_frame == keyframes.at(current_keyframe).frame) {
-        result = keyframes[current_keyframe].transform;
-      } else if (current_frame < keyframes.at(current_keyframe).frame) {
-        result = Keyframe::lerp(keyframes[current_frame - 1],
-                                keyframes[current_frame],
+      if (current_frame < keyframes.at(current_keyframe).frame) {
+        result = Keyframe::lerp(keyframes[current_keyframe - 1],
+                                keyframes[current_keyframe],
                                 current_frame);
       } else {
+        result = keyframes[current_keyframe].transform;
+
         if (current_keyframe + 1 < keyframes.size()) {
           ++current_keyframe;
         } else if (is_looping) {
@@ -29,10 +31,10 @@ Transform Animation::next_frame() {
         }
       }
     } else {
-      result = keyframes.back().transform;
+      throw std::out_of_range("Trying to access keyframe out of range.");
     }
   } else {
-    // Throw an error somehow so that the callee knows that the returned default Transform is invalid.
+    throw std::runtime_error("Trying to animate without any keyframes.");
   }
   return result;
 }

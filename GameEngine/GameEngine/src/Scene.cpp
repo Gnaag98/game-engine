@@ -167,9 +167,8 @@ void Scene::update() {
   // TODO: Add animation control.
 
   for (auto& object : objects) {
-    if (object->mesh) {
-      // TEMP: Rotation.
-      object->transform.rotate({ 0, float(M_PI * 2.0 / 60.0), 0 });
+    if (object->animation) {
+      object->transform = object->animation->step();
     }
   }
 }

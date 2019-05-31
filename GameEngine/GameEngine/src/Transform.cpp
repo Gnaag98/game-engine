@@ -5,44 +5,12 @@
 const Transform Transform::ORIGIN = Transform{};
 
 Transform::Transform() : m_position(0), m_rotation(0), m_scale(1) {
-  std::cout << "[Transform] Default constructor.\n";
   update_matrix();
 }
 
 Transform::Transform(Vec3f pos, Vec3f rot, Vec3f scl)
   : m_position(pos), m_rotation(rot), m_scale(scl) {
-  std::cout << "[Transform] Parameter constructor.\n";
   update_matrix();
-}
-
-Transform::Transform(const Transform& other)
-  : m_position(other.m_position), m_rotation(other.m_rotation),
-    m_scale(other.m_scale), m_matrix(other.m_matrix) {
-  std::cout << "[Transform] Copy constructor.\n";
-}
-
-Transform::Transform(Transform&& other)
-  : m_position(std::move(other.m_position)), m_rotation(std::move(other.m_rotation)),
-  m_scale(std::move(other.m_scale)), m_matrix(std::move(other.m_matrix)) {
-  std::cout << "[Transform] Move constructor.\n";
-}
-
-Transform &Transform::operator=(const Transform& other) {
-  std::cout << "[Transform] Copy constructor.\n";
-  m_position = other.m_position;
-  m_rotation = other.m_rotation;
-  m_scale = other.m_scale;
-  m_matrix = other.m_matrix;
-  return *this;
-}
-
-Transform &Transform::operator=(Transform&& other) {
-  std::cout << "[Transform] Move constructor.\n";
-  m_position = std::move(other.m_position);
-  m_rotation = std::move(other.m_rotation);
-  m_scale = std::move(other.m_scale);
-  m_matrix = std::move(other.m_matrix);
-  return *this;
 }
 
 const Vec3f& Transform::position() const {

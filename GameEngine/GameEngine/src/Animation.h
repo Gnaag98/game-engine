@@ -13,5 +13,5 @@ public:
   bool is_looping = true;
 
 public:
-  Transform next_frame();
+  Transform step();
 };

@@ -14,6 +14,7 @@ private:
   // Save file path for debugging purposes.
   const std::string m_file_path;
   unsigned int m_renderer_id = 0;
+  // Make the cache mutable so that the rest of the class can be marked const.
   std::unordered_map<std::string, int> m_uniform_location_cache;
 
 public:

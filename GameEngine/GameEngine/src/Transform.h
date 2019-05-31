@@ -6,21 +6,16 @@
 class Transform {
 public:
   static const Transform ORIGIN;
-  static int i;
 private:
   Vec3f m_position;
   Vec3f m_rotation;
   Vec3f m_scale;
   Matrix44f m_matrix;
-  // TODO: Add parent transform.
+  // TODO: Add parent transform and "recursive" method to get local-to-world matrix.
 
 public:
   Transform();
   Transform(Vec3f position, Vec3f rotation = Vec3f(0), Vec3f scale = Vec3f(1));
-  Transform(const Transform& other);
-  Transform(Transform&& other);
-  Transform& operator=(const Transform& other);
-  Transform& operator=(Transform&& other);
 
   const Vec3f& position() const;
   Transform& position(const Vec3f& position);

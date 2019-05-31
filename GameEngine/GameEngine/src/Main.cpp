@@ -21,7 +21,7 @@
 #include "Cube.h"
 
 #include "Transform.h"
-#include "Keyframe.h"
+#include "Animation.h"
 #include "Color.h"
 
 #include "Vec3.h"
@@ -40,6 +40,24 @@ void create_objects(Scene& scene) {
 
   {
     auto cube = std::make_unique<Object>(Transform::ORIGIN, cube_mesh);
+
+    cube->animation = std::make_unique<Animation>();
+    auto transform = Transform{ Vec3f{0.0f, -5.0f, 0.0f } };
+    cube->animation->keyframes.emplace_back(0, transform);
+    transform.translate(Vec3f{ -2, 3, 0 });
+    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
+    cube->animation->keyframes.emplace_back(30, transform);
+    transform.translate(Vec3f{ 2, 3, 0 });
+    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
+    cube->animation->keyframes.emplace_back(60, transform);
+    transform.translate(Vec3f{ 0, -3, -2 });
+    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
+    cube->animation->keyframes.emplace_back(90, transform);
+    transform.translate(Vec3f{ 0, -3, 2 });
+    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
+    cube->animation->keyframes.emplace_back(120, transform);
+
+
     scene.objects.push_back(std::move(cube));
   }
   
