@@ -20,7 +20,9 @@ Transform Animation::step() {
       } else {
         if (current_keyframe + 1 < keyframes.size()) {
           ++current_keyframe;
-          result = keyframes[current_keyframe].transform;
+          result = Keyframe::lerp(keyframes[current_keyframe - 1],
+                                  keyframes[current_keyframe],
+                                  current_frame);
         } else if (is_looping) {
           current_keyframe = 0;
           current_frame = 0;
