@@ -18,16 +18,17 @@ Transform Animation::step() {
                                 keyframes[current_keyframe],
                                 current_frame);
       } else {
-        result = keyframes[current_keyframe].transform;
-
         if (current_keyframe + 1 < keyframes.size()) {
           ++current_keyframe;
+          result = keyframes[current_keyframe].transform;
         } else if (is_looping) {
           current_keyframe = 0;
           current_frame = 0;
+          result = keyframes.front().transform;
         } else {
           // Decrement to counteract the increment. Gives the effect of stopping the counter.
           --current_frame;
+          result = keyframes.back().transform;
         }
       }
     } else {
