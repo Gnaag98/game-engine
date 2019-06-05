@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <utility>
 
 #include "Matrix33.h"
 #include "Matrix48.h"
@@ -164,10 +165,6 @@ Matrix44f Matrix44f::inverse() const {
 Matrix44f Matrix44f::operator*(const Matrix44f& other) const {
   Matrix44f result(false);
 
-  //std::cout << "-------- Matrix multiplication --------\n\n";
-  //std::cout << "This matrix:\n" << *this << "\n";
-  //std::cout << "Other matrix:\n" << other << "\n";
-
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       for (int k = 0; k < 4; k++) {
@@ -176,10 +173,6 @@ Matrix44f Matrix44f::operator*(const Matrix44f& other) const {
     }
   }
 
-  //std::cout << "Resulting matrix:\n" << result << "\n";
-  //
-  //std::cout << "\n---------------------------------------\n";
-
   return result;
 }
 
@@ -187,24 +180,48 @@ Matrix44f& Matrix44f::operator*=(const Matrix44f& other) {
   return *this = *this * other;
 }
 
-Matrix44f Matrix44f::scalar(float s) {
+Matrix44f Matrix44f::translation(const Vec3f& t) {
+  return std::move(translation(t.x, t.y, t.z));
+}
+
+Matrix44f Matrix44f::translation(float x, float y, float z) {
   return Matrix44f(
-    s, 0, 0, 0,
-    0, s, 0, 0,
-    0, 0, s, 0,
-    0, 0, 0, 1
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    x, y, z, 1
   );
 }
 
+Matrix44f& Matrix44f::translate(const Vec3f& t) {
+  return translate(t.x, t.y, t.z);
+}
 
+Matrix44f& Matrix44f::translate(float x, float y, float z) {
+  return *this *= translation(x, y, z);
+}
 
-Matrix44f Matrix44f::scalar(float x, float y, float z) {
-  return Matrix44f(
-    x, 0, 0, 0,
-    0, y, 0, 0,
-    0, 0, z, 0,
-    0, 0, 0, 1
-  );
+Matrix44f& Matrix44f::rotate_x(float angle) {
+  return *this *= rotation_x(angle);
+}
+
+Matrix44f& Matrix44f::rotate_y(float angle) {
+  return *this *= rotation_y(angle);
+}
+
+Matrix44f& Matrix44f::rotate_z(float angle) {
+  return *this *= rotation_z(angle);
+}
+
+Matrix44f& Matrix44f::rotate(const Vec3f& r) {
+  return rotate(r.x, r.y, r.z);
+}
+
+Matrix44f& Matrix44f::rotate(float x, float y, float z) {
+  if (z) rotate_z(z);
+  if (x) rotate_x(x);
+  if (y) rotate_y(y);
+  return *this;
 }
 
 Matrix44f Matrix44f::rotation_x(float angle) {
@@ -234,12 +251,33 @@ Matrix44f Matrix44f::rotation_z(float angle) {
   );
 }
 
-Matrix44f Matrix44f::translation(float x, float y, float z) {
+Matrix44f Matrix44f::rotation(const Vec3f& r) {
+  return std::move(rotation(r.x, r.y, r.z));
+}
+
+Matrix44f Matrix44f::rotation(float x, float y, float z) {
+  return std::move(Matrix44f{}.rotate(x, y, z));
+}
+
+Matrix44f Matrix44f::scalar(float s) {
   return Matrix44f(
-    1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    x, y, z, 1
+    s, 0, 0, 0,
+    0, s, 0, 0,
+    0, 0, s, 0,
+    0, 0, 0, 1
+  );
+}
+
+Matrix44f Matrix44f::scalar(const Vec3f& s) {
+  return std::move(scalar(s.x, s.y, s.z));
+}
+
+Matrix44f Matrix44f::scalar(float x, float y, float z) {
+  return Matrix44f(
+    x, 0, 0, 0,
+    0, y, 0, 0,
+    0, 0, z, 0,
+    0, 0, 0, 1
   );
 }
 
@@ -247,24 +285,12 @@ Matrix44f& Matrix44f::scale(float s) {
   return *this *= scalar(s);
 }
 
+Matrix44f& Matrix44f::scale(const Vec3f& s) {
+  return scale(s.x, s.y, s.z);
+}
+
 Matrix44f& Matrix44f::scale(float x, float y, float z) {
   return *this *= scalar(x, y, z);
-}
-
-Matrix44f& Matrix44f::rotate_x(float angle) {
-  return *this *= rotation_x(angle);
-}
-
-Matrix44f& Matrix44f::rotate_y(float angle) {
-  return *this *= rotation_y(angle);
-}
-
-Matrix44f& Matrix44f::rotate_z(float angle) {
-  return *this *= rotation_z(angle);
-}
-
-Matrix44f& Matrix44f::translate(float x, float y, float z) {
-  return *this *= translation(x, y, z);
 }
 
 std::ostream& operator<<(std::ostream& s, const Matrix44f& m) {

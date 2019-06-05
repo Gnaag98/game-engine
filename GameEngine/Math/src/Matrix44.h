@@ -3,6 +3,7 @@
 #include <ostream>
 
 #include "Matrix48.h"
+#include "Vec3.h"
 
 class Matrix44f {
 private:
@@ -38,18 +39,28 @@ public:
   Matrix44f& operator*=(const Matrix44f& other);
 
   //  Transformations.
-  static Matrix44f scalar(float scale);
-  static Matrix44f scalar(float x, float y, float z);
+  static Matrix44f translation(const Vec3f& translation);
+  static Matrix44f translation(float x, float y, float z);
+  Matrix44f& translate(const Vec3f& translation);
+  Matrix44f& translate(float x, float y, float z);
+
   static Matrix44f rotation_x(float angle);
   static Matrix44f rotation_y(float angle);
   static Matrix44f rotation_z(float angle);
-  static Matrix44f translation(float x, float y, float z);
-  Matrix44f& scale(float scalar);
-  Matrix44f& scale(float x, float y, float z);
+  static Matrix44f rotation(const Vec3f& rotation);
+  static Matrix44f rotation(float x, float y, float z);
   Matrix44f& rotate_x(float angle);
   Matrix44f& rotate_y(float angle);
   Matrix44f& rotate_z(float angle);
-  Matrix44f& translate(float x, float y, float z);
+  Matrix44f& rotate(const Vec3f& rotation);
+  Matrix44f& rotate(float x, float y, float z);
+
+  static Matrix44f scalar(float scalar);
+  static Matrix44f scalar(const Vec3f& scalar);
+  static Matrix44f scalar(float x, float y, float z);
+  Matrix44f& scale(float scalar);
+  Matrix44f& scale(const Vec3f& scalar);
+  Matrix44f& scale(float x, float y, float z);
 
 public:
   //  Print matrix to ostream.

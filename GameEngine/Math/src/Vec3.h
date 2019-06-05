@@ -3,7 +3,7 @@
 #include <cmath>
 #include <ostream>
 
-#include "Matrix44.h"
+class Matrix44f;
 
 class Vec3f {
 public:
@@ -26,12 +26,12 @@ public:
   Vec3f& operator*=(const Matrix44f& matrix);
 
   explicit operator bool() const;
-  
+
   float magnitude() const;
   float dot(const Vec3f& other) const;
 
   Vec3f& normalize();
-  
+
   Vec3f& lerp(const Vec3f& start, const Vec3f& end, float percent);
 
   //  Print matrix to ostream.
