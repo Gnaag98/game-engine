@@ -35,11 +35,9 @@
 #include "Texture.h"
 
 void create_objects(Scene& scene) {
-  // 3x3 grid of cubes.
-  auto cube_mesh = std::make_shared<Cube>(true);
-
   {
-    auto cube = std::make_unique<Object>(Transform::ORIGIN, cube_mesh);
+    auto cube = std::make_unique<Object>(Vec3f{ -6, 0, -6 });
+    cube->mesh = std::make_unique<Cube>(false);
 
     cube->animation = std::make_unique<Animation>();
     auto transform = Transform{ Vec3f{0.0f, -5.0f, 0.0f } };
@@ -109,7 +107,7 @@ int main() {
   // Image settings.
   scene.settings.image_width = 256;
   scene.settings.image_height = 256;
-  scene.settings.background_color = Color255(51);
+  scene.settings.background_color = Color255{ 51 };
   scene.settings.anti_aliasing = 1;
   // Animation settings.
   scene.settings.frame_count = 1;

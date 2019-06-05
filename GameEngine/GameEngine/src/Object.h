@@ -11,14 +11,14 @@ class Object {
 public:
   Transform transform;
   std::unique_ptr<Animation> animation;
-  // TODO: implement logic for objects having children and/or parents.
-  //std::vector<Object> children;
-  std::shared_ptr<Mesh> mesh;
+  std::unique_ptr<Mesh> mesh;
+private:
+  Object* m_parent = nullptr;
+  //TODO: Add a way to own child objects so that they destruct when the parent is destroyed.
 
 public:
   Object() = default;
   explicit Object(const Transform& transform);
-  Object(const Transform& transform, std::shared_ptr<Mesh> mesh);
 
   Object(const Object& other) = default;
   Object(Object&&) = default;

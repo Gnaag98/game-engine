@@ -14,7 +14,7 @@ public:
   struct Settings {
     int image_width = 0;
     int image_height = 0;
-    Color255 background_color = Color255::BLACK;
+    Color background_color = Color::BLACK;
     int anti_aliasing = 1;
 
     int frame_count = 0;

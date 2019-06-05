@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <stdexcept>
 #include <utility>
+#include <cassert>
 
 #include "Matrix44.h"
 
@@ -105,9 +106,8 @@ float Vec3f::dot(const Vec3f& other) const {
 Vec3f& Vec3f::normalize() {
   float magnitude_squared = dot(*this);
   
-  if (magnitude_squared < 0) {
-    throw std::runtime_error("The square of a magnitude can't be negative.");
-  }
+  // The square of a magnitude can't be negative.
+  assert(magnitude_squared >= 0);
   
   if (magnitude_squared > 0) {
     float inv_magnitude = 1 / std::sqrt(magnitude_squared);

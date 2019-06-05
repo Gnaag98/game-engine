@@ -46,8 +46,8 @@ auto Scene::render()->int {
   std::vector<Vertex*> my_vertex_buffer;
   std::vector<Triangle*> triangle_buffer;
 
-  int vertex_count = 0;
-  int triangle_count = 0;
+  auto vertex_count = 0;
+  auto triangle_count = 0;
   for (const auto& object : objects) {
     if (object->mesh) {
       vertex_count += object->mesh->verticies.size();
@@ -212,6 +212,6 @@ void Scene::reset_image(std::vector<Color255>& frame_buffer,
   //  Fill with background color and set depth_buffer to infinity.
   std::fill(frame_buffer.begin(), frame_buffer.end(), settings.background_color);
   //  XXX: Hardcoded value for background.
-  std::fill(subpixel_buffer.begin(), subpixel_buffer.end(), 51.0f / 255.0f);
+  std::fill(subpixel_buffer.begin(), subpixel_buffer.end(), settings.background_color);
   std::fill(depth_buffer.begin(), depth_buffer.end(), INFINITY);
 }
