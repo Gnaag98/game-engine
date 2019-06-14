@@ -1,94 +1,164 @@
 #include "Transform.h"
 
 #include <iostream>
+#include <utility>
 
 const Transform Transform::ORIGIN = Transform{};
 
-Transform::Transform() : m_position(0), m_rotation(0), m_scale(1) {
-  update_matrix();
+Transform::Transform() : m_position{ 0 }, m_rotation{ 0 }, m_scale{ 1 } {
+  update_local_matrix();
 }
 
-Transform::Transform(Vec3f pos, Vec3f rot, Vec3f scl)
-  : m_position(pos), m_rotation(rot), m_scale(scl) {
-  update_matrix();
+Transform::Transform(Vec3f position, Vec3f rotation, Vec3f scale)
+  : m_position{ position }, m_rotation{ rotation }, m_scale{ scale } {
+  update_local_matrix();
 }
 
-const Vec3f& Transform::position() const {
+auto Transform::local_position() const -> const Vec3f& {
   return m_position;
 }
 
-Transform& Transform::position(const Vec3f& position) {
+auto Transform::local_position(const Vec3f& position) -> Transform& {
   m_position = position;
-  update_matrix();
+  update_local_matrix();
   return *this;
 }
 
-Transform& Transform::translate(const Vec3f& translation) {
-  m_position += translation;
-  update_matrix();
+auto Transform::local_translation_matrix() const -> Matrix44f {
+  return Matrix44f::translation(m_position);
+}
+
+auto Transform::translate_locally(const Vec3f& translation) -> Transform& {
+  if (m_parent) {
+    m_position += std::move(translation *
+                            m_parent->world_to_local_matrix().rotation_and_scale() *
+                            rotation_matrix());
+  } else {
+    m_position += std::move(translation * rotation_matrix());
+  }
+  update_local_matrix();
   return *this;
 }
 
-const Vec3f& Transform::rotation() const {
+auto Transform::position() const -> Vec3f {
+  if (m_parent) {
+    return std::move(m_position * m_parent->local_to_world_matrix());
+  } else {
+    return m_position;
+  }
+}
+
+auto Transform::position(const Vec3f& position) -> Transform& {
+  if (m_parent) {
+    m_position = std::move(position * m_parent->world_to_local_matrix());
+  } else {
+    m_position = position;
+  }
+  update_local_matrix();
+  return *this;
+}
+
+auto Transform::translation_matrix() const -> Matrix44f {
+  if (m_parent) {
+    return local_to_world_matrix().translation();
+  } else {
+    return local_translation_matrix();
+  }
+}
+
+auto Transform::translate(const Vec3f& translation) -> Transform& {
+  if (m_parent) {
+    m_position += std::move(translation * m_parent->world_to_local_matrix().rotation_and_scale());
+  } else {
+    m_position += translation;
+  }
+  update_local_matrix();
+  return *this;
+}
+
+auto Transform::local_euler_angles() const -> const Vec3f& {
   return m_rotation;
 }
 
-Transform& Transform::rotation(const Vec3f& rotation) {
-  m_rotation = rotation;
-  update_matrix();
+auto Transform::local_euler_angles(const Vec3f& angles) -> Transform& {
+  m_rotation = angles;
+  update_local_matrix();
   return *this;
 }
 
-Transform& Transform::rotate(const Vec3f& rotation) {
-  m_rotation += rotation;
-  update_matrix();
+auto Transform::local_rotation_matrix() const -> Matrix44f {
+  return Matrix44f::rotation(m_rotation);
+}
+
+auto Transform::rotate_locally(const Vec3f& angles) -> Transform& {
+  m_rotation += angles;
+  update_local_matrix();
   return *this;
 }
 
-const Vec3f& Transform::scale() const {
+auto Transform::rotation_matrix() const -> Matrix44f {
+  if (m_parent) {
+    return std::move(local_rotation_matrix() * m_parent->rotation_matrix());
+  } else {
+    return local_rotation_matrix();
+  }
+}
+
+auto Transform::local_scale() const -> const Vec3f& {
   return m_scale;
 }
 
-Transform& Transform::scale(const Vec3f& scale) {
+auto Transform::local_scale(const Vec3f& scale) -> Transform& {
   m_scale = scale;
-  update_matrix();
+  update_local_matrix();
   return *this;
 }
 
-const Matrix44f& Transform::matrix() const {
-  //std::cout << "m_position: " << m_position <<
-  //  "\nm_rotation: " << m_rotation <<
-  //  "\nm_scale: " << m_scale << "\n\n";
+auto Transform::local_matrix() const -> const Matrix44f& {
   return m_matrix;
 }
 
-Transform& Transform::lerp(const Transform& start, const Transform& end,
-                           const float percent,
-                           const bool is_translating,
-                           const bool is_rotating,
-                           const bool is_scaling) {
-  //std::cout << "Lerping transform...\n";
-  if (is_translating) m_position.lerp(start.position(), end.position(), percent);
-  if (is_rotating) m_rotation.lerp(start.rotation(), end.rotation(), percent);
-  if (is_scaling) m_scale.lerp(start.scale(), end.scale(), percent);
-  update_matrix();
-  //std::cout << "Done lerping transform.\n";
+auto Transform::local_to_world_matrix() const -> Matrix44f {
+  if (m_parent)
+    return std::move(m_matrix * m_parent->local_to_world_matrix());
+  else
+    return m_matrix;
+}
+
+auto Transform::world_to_local_matrix() const -> Matrix44f {
+  if (m_parent)
+    return local_to_world_matrix().inverse();
+  else
+    return m_matrix.inverse();
+}
+
+auto Transform::right() const -> Vec3f {
+  return Vec3f::right() * rotation_matrix();
+}
+
+auto Transform::up() const -> Vec3f {
+  return Vec3f::up() * rotation_matrix();
+}
+
+auto Transform::forward() const -> Vec3f {
+  return Vec3f::forward() * rotation_matrix();
+}
+
+Transform& Transform::lerp_locally(const Transform& start, const Transform& end,
+                                   const float percent,
+                                   const bool is_translating,
+                                   const bool is_rotating,
+                                   const bool is_scaling) {
+  if (is_translating) m_position.lerp(start.local_position(), end.local_position(), percent);
+  if (is_rotating) m_rotation.lerp(start.local_euler_angles(), end.local_euler_angles(), percent);
+  if (is_scaling) m_scale.lerp(start.local_scale(), end.local_scale(), percent);
+  update_local_matrix();
   return *this;
 }
 
-void Transform::update_matrix() {
-  //std::cout << "Updating matrix...\n";
-  m_matrix = Matrix44f();
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  if (m_rotation.z) m_matrix.rotate_z(m_rotation.z);
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  if (m_rotation.x) m_matrix.rotate_x(m_rotation.x);
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  if (m_rotation.y) m_matrix.rotate_y(m_rotation.y);
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  if (m_position)   m_matrix.translate(m_position.x, m_position.y, m_position.z);
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  if (m_scale != Vec3f(1)) m_matrix.scale(m_scale.x, m_scale.y, m_scale.z);
-  //std::cout << "m_matrix:\n" << m_matrix << "\n";
-  //std::cout << "Done updating matrix.\n";
+void Transform::update_local_matrix() {
+  m_matrix = Matrix44f{};
+  if (m_scale != Vec3f{ 1 }) m_matrix.scale(m_scale.x, m_scale.y, m_scale.z);
+  if (m_rotation) m_matrix.rotate(m_rotation);
+  if (m_position) m_matrix.translate(m_position.x, m_position.y, m_position.z);
 }

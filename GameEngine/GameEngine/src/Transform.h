@@ -6,35 +6,58 @@
 class Transform {
 public:
   static const Transform ORIGIN;
+  Transform* m_parent = nullptr;
 private:
   Vec3f m_position;
   Vec3f m_rotation;
   Vec3f m_scale;
   Matrix44f m_matrix;
-  // TODO: Add parent transform and "recursive" method to get local-to-world matrix.
 
 public:
   Transform();
-  Transform(Vec3f position, Vec3f rotation = Vec3f(0), Vec3f scale = Vec3f(1));
+  Transform(Vec3f position, Vec3f rotation = Vec3f{ 0 }, Vec3f scale = Vec3f{ 1 });
 
-  const Vec3f& position() const;
-  Transform& position(const Vec3f& position);
-  Transform& translate(const Vec3f& translation);
-
-  const Vec3f& rotation() const;
-  Transform& rotation(const Vec3f& rotation);
-  Transform& rotate(const Vec3f& rotation);
+  [[nodiscard]]
+  auto local_position() const -> const Vec3f&;
+  auto local_position(const Vec3f& position) -> Transform&;
+  [[nodiscard]]
+  auto local_translation_matrix() const -> Matrix44f;
+  auto translate_locally(const Vec3f& translation) -> Transform&;
+  [[nodiscard]]
+  auto position() const -> Vec3f;
+  auto position(const Vec3f& position) -> Transform&;
+  [[nodiscard]]
+  auto translation_matrix() const -> Matrix44f;
+  auto translate(const Vec3f& translation) -> Transform&;
   
-  const Vec3f& scale() const;
-  Transform& scale(const Vec3f& scale);
+  [[nodiscard]]
+  auto local_euler_angles() const -> const Vec3f&;
+  auto local_euler_angles(const Vec3f& euler_angles) -> Transform&;
+  [[nodiscard]]
+  auto local_rotation_matrix() const -> Matrix44f;
+  auto rotate_locally(const Vec3f& euler_angles) -> Transform&;
+  [[nodiscard]]
+  auto rotation_matrix() const -> Matrix44f;
+  
+  [[nodiscard]]
+  auto local_scale() const -> const Vec3f&;
+  auto local_scale(const Vec3f& scale) -> Transform&;
+  
+  [[nodiscard]]
+  auto local_matrix() const -> const Matrix44f&;
+  [[nodiscard]]
+  auto local_to_world_matrix() const -> Matrix44f;
+  auto world_to_local_matrix() const -> Matrix44f;
 
-  const Matrix44f& matrix() const;
+  auto right() const -> Vec3f;
+  auto up() const -> Vec3f;
+  auto forward() const -> Vec3f;
 
-  Transform& lerp(const Transform& start, const Transform& end,
-                  float percent,
-                  bool is_translating = true,
-                  bool is_rotating = true,
-                  bool is_scaling = true);
+  Transform& lerp_locally(const Transform& start, const Transform& end,
+                          float percent,
+                          bool is_translating = true,
+                          bool is_rotating = true,
+                          bool is_scaling = true);
 private:
-  void update_matrix();
+  void update_local_matrix();
 };

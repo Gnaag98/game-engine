@@ -95,9 +95,9 @@ void Rasterizer::render_triangle(const Triangle& triangle,
       //triangle.normals[0]->normalize(),
       //triangle.normals[1]->normalize(),
       //triangle.normals[2]->normalize()
-    (*triangle.normals[0] * transform.matrix()).normalize(),
-    (*triangle.normals[1] * transform.matrix()).normalize(),
-    (*triangle.normals[2] * transform.matrix()).normalize()
+    (*triangle.normals[0] * transform.local_to_world_matrix()).normalize(),
+    (*triangle.normals[1] * transform.local_to_world_matrix()).normalize(),
+    (*triangle.normals[2] * transform.local_to_world_matrix()).normalize()
   };
 
   // Experimental lights.

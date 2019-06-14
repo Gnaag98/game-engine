@@ -60,11 +60,6 @@ void Camera::aspect_ratio(float ratio)  {
   set_canvas();
 }
 
-Matrix44f Camera::world_to_camera() const {
-  // XXX: Possibly makes an unnecessary copy. Could solve with std::move().
-  return transform.matrix().inverse();
-}
-
 void Camera::project_object(Object& object,
                             const int image_width,
                             const int image_height) const {
@@ -82,7 +77,7 @@ void Camera::project_object(Object& object,
 }
 
 void Camera::project_vertex(Vertex& vertex,
-                            const Transform& transform,
+                            const Transform& vertex_transform,
                             const int image_width,
                             const int image_height) const {
   //std::cout << "    Projecting vertex...\n";
@@ -92,7 +87,7 @@ void Camera::project_vertex(Vertex& vertex,
   //std::cout << "vertex->position: " << vertex.position << "\n";
 
   //  World Space -> Camera Space.
-  Vec3f point_camera = vertex.position * transform.matrix() * world_to_camera();
+  Vec3f point_camera = vertex.position * vertex_transform.local_to_world_matrix() * transform.world_to_local_matrix();
 
   //std::cout << "point_camera: " << point_camera << "\n";
 

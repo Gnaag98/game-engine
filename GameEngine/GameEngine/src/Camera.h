@@ -37,14 +37,13 @@ public:
   void fov(const float fov_horizontal);
   float aspect_ratio() const;
   void aspect_ratio(float aspect_ratio);
-  Matrix44f world_to_camera() const;
 
   void project_object(Object& object,
                       const int image_width,
                       const int image_height) const;
 
   void project_vertex(Vertex& vertex,
-                      const Transform& transform,
+                      const Transform& vertex_transform,
                       const int image_width,
                       const int image_height) const;
 private:

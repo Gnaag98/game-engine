@@ -25,4 +25,8 @@ public:
   Object& operator=(const Object& other) = default;
   Object& operator=(Object&&) = default;
   virtual ~Object() = default;
+
+  [[nodiscard]]
+  auto parent() const -> Object*;
+  auto parent(Object* parent) -> Object&;
 };

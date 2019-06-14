@@ -201,6 +201,14 @@ Matrix44f& Matrix44f::translate(float x, float y, float z) {
   return *this *= translation(x, y, z);
 }
 
+Matrix44f Matrix44f::translation() const {
+  auto result = Matrix44f{};
+  result[3][0] = m[3][0];
+  result[3][1] = m[3][1];
+  result[3][2] = m[3][2];
+  return result;
+}
+
 Matrix44f& Matrix44f::rotate_x(float angle) {
   return *this *= rotation_x(angle);
 }
@@ -291,6 +299,18 @@ Matrix44f& Matrix44f::scale(const Vec3f& s) {
 
 Matrix44f& Matrix44f::scale(float x, float y, float z) {
   return *this *= scalar(x, y, z);
+}
+
+Matrix44f Matrix44f::rotation_and_scale() const {
+  auto result = *this;
+  result[0][3] = 0;
+  result[1][3] = 0;
+  result[2][3] = 0;
+  result[3][3] = 1;
+  result[3][0] = 0;
+  result[3][1] = 0;
+  result[3][2] = 0;
+  return result;
 }
 
 std::ostream& operator<<(std::ostream& s, const Matrix44f& m) {

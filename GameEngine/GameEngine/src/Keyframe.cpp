@@ -23,7 +23,7 @@ Transform Keyframe::lerp(const Keyframe& start, const Keyframe& end,
     transform = start.transform;
   } else if (frame < end.frame) {
     float progress = (frame - start.frame) / float(end.frame - start.frame);
-    transform.lerp(start.transform, end.transform, progress);
+    transform.lerp_locally(start.transform, end.transform, progress);
   } else {
     transform = end.transform;
   }

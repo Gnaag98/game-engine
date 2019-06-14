@@ -20,79 +20,16 @@ float& Vec3f::operator[](int i) {
   return (&x)[i];
 }
 
-Vec3f& Vec3f::operator+=(const Vec3f& other) {
-  x += other.x, y += other.y, z += other.z;
-  return *this;
+Vec3f Vec3f::right(const float scalar) {
+  return Vec3f{ scalar, 0, 0 };
 }
 
-Vec3f& Vec3f::operator-=(const Vec3f& other) {
-  x -= other.x, y -= other.y, z -= other.z;
-  return *this;
+Vec3f Vec3f::up(const float scalar) {
+  return Vec3f{ 0, scalar, 0 };
 }
 
-Vec3f& Vec3f::operator*=(const float scalar){
-  x *= scalar, y *= scalar, z *= scalar;
-  return *this;
-}
-
-Vec3f& Vec3f::operator/=(const float scalar) {
-  x /= scalar, y /= scalar, z /= scalar;
-  return *this;
-}
-
-//Vec3f Vec3f::operator+(const Vec3f& other) const {
-//  return Vec3f(x + other.x, y + other.y, z + other.z);
-//}
-//
-//Vec3f Vec3f::operator-(const Vec3f& other) const {
-//  return Vec3f(x - other.x, y - other.y, z - other.z);
-//}
-//
-//Vec3f Vec3f::operator*(const float scalar) const {
-//  return Vec3f(x * scalar, y * scalar, z * scalar);
-//}
-//
-//Vec3f Vec3f::operator/(const float scalar) const {
-//  return Vec3f(x / scalar, y / scalar, z / scalar);
-//}
-
-//Vec3f Vec3f::operator*(const Matrix44f& m) const {
-//  float a, b, c, w;
-//
-//  a = x * m[0][0] + y * m[1][0] + z * m[2][0] + m[3][0];
-//  b = x * m[0][1] + y * m[1][1] + z * m[2][1] + m[3][1];
-//  c = x * m[0][2] + y * m[1][2] + z * m[2][2] + m[3][2];
-//  w = x * m[0][3] + y * m[1][3] + z * m[2][3] + m[3][3];
-//
-//  if (w != 1.0f && w != 0.0f) {
-//    a /= w;
-//    b /= w;
-//    c /= w;
-//  }
-//
-//  return Vec3f(a, b, c);
-//}
-
-Vec3f& Vec3f::operator*=(const Matrix44f& m) {
-  float result_x, result_y, result_z, result_w;
-
-  result_x = x * m[0][0] + y * m[1][0] + z * m[2][0] + m[3][0];
-  result_y = x * m[0][1] + y * m[1][1] + z * m[2][1] + m[3][1];
-  result_z = x * m[0][2] + y * m[1][2] + z * m[2][2] + m[3][2];
-  result_w = x * m[0][3] + y * m[1][3] + z * m[2][3] + m[3][3];
-
-  // TODO: Err of w == 0.
-  if (!(result_w == 1 || result_w == 0)) {
-    result_x /= result_w;
-    result_y /= result_w;
-    result_z /= result_w;
-  }
-  x = result_x, y = result_y, z = result_z;
-  return *this;
-}
-
-Vec3f::operator bool() const {
-  return x || y || z;
+Vec3f Vec3f::forward(const float scalar) {
+  return Vec3f{ 0, 0, scalar };
 }
 
 float Vec3f::magnitude() const {
@@ -126,6 +63,48 @@ Vec3f& Vec3f::lerp(const Vec3f& start, const Vec3f& end, const float percent) {
     *this = start + (end - start) * percent;
 
   return *this;
+}
+
+Vec3f& Vec3f::operator+=(const Vec3f& other) {
+  x += other.x, y += other.y, z += other.z;
+  return *this;
+}
+
+Vec3f& Vec3f::operator-=(const Vec3f& other) {
+  x -= other.x, y -= other.y, z -= other.z;
+  return *this;
+}
+
+Vec3f& Vec3f::operator*=(const float scalar) {
+  x *= scalar, y *= scalar, z *= scalar;
+  return *this;
+}
+
+Vec3f& Vec3f::operator/=(const float scalar) {
+  x /= scalar, y /= scalar, z /= scalar;
+  return *this;
+}
+
+Vec3f& Vec3f::operator*=(const Matrix44f& m) {
+  float result_x, result_y, result_z, result_w;
+
+  result_x = x * m[0][0] + y * m[1][0] + z * m[2][0] + m[3][0];
+  result_y = x * m[0][1] + y * m[1][1] + z * m[2][1] + m[3][1];
+  result_z = x * m[0][2] + y * m[1][2] + z * m[2][2] + m[3][2];
+  result_w = x * m[0][3] + y * m[1][3] + z * m[2][3] + m[3][3];
+
+  // TODO: Err of w == 0.
+  if (!(result_w == 1 || result_w == 0)) {
+    result_x /= result_w;
+    result_y /= result_w;
+    result_z /= result_w;
+  }
+  x = result_x, y = result_y, z = result_z;
+  return *this;
+}
+
+Vec3f::operator bool() const {
+  return x || y || z;
 }
 
 std::ostream& operator<<(std::ostream& s, const Vec3f& v) {

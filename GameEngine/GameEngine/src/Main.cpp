@@ -36,65 +36,21 @@
 
 void create_objects(Scene& scene) {
   {
-    auto cube = std::make_unique<Object>(Vec3f{ -6, 0, -6 });
-    cube->mesh = std::make_unique<Cube>(false);
+    auto cube = std::make_unique<Object>(Vec3f{ 0, 0, 0 });
+    cube->mesh = std::make_unique<Cube>(true);
 
-    cube->animation = std::make_unique<Animation>();
-    auto transform = Transform{ Vec3f{0.0f, -5.0f, 0.0f } };
-    cube->animation->keyframes.emplace_back(0, transform);
-    transform.translate(Vec3f{ -2, 3, 0 });
-    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
-    cube->animation->keyframes.emplace_back(30, transform);
-    transform.translate(Vec3f{ 2, 3, 0 });
-    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
-    cube->animation->keyframes.emplace_back(60, transform);
-    transform.translate(Vec3f{ 0, -3, -2 });
-    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
-    cube->animation->keyframes.emplace_back(90, transform);
-    transform.translate(Vec3f{ 0, -3, 2 });
-    transform.rotate(Vec3f{ 0, float(M_PI_2), 0 });
-    cube->animation->keyframes.emplace_back(120, transform);
+    auto parent = std::make_unique<Object>(Vec3f{ 0, 0, 0 });
+    cube->parent(parent.get());
 
+    cube->transform.translate_locally(Vec3f::right(2) + Vec3f::up(1));
+    
+    parent->animation = std::make_unique<Animation>();
+    parent->animation->keyframes.emplace_back(0, Transform{});
+    parent->animation->keyframes.emplace_back(180, Transform{ Vec3f{ 0 }, Vec3f{ 0, float(M_PI * 2), 0 } });
 
+    scene.objects.push_back(std::move(parent));
     scene.objects.push_back(std::move(cube));
   }
-  
-  //std::array<Transform, 26> cube_transforms = {
-  //  Transform(Vec3f(-6, -6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0, -6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6, -6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6, -6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0, -6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6, -6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6, -6,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0, -6,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6, -6,  6), Vec3f(0), Vec3f(1)),
-  //
-  //  Transform(Vec3f(-6,   0, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0,   0, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,   0, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6,   0,  0), Vec3f(0), Vec3f(1)),
-  //  //Transform(Vec3f( 0,   0,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,   0,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6,   0,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0,   0,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,   0,  6), Vec3f(0), Vec3f(1)),
-  //
-  //  Transform(Vec3f(-6,  6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0,  6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,  6, -6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6,  6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0,  6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,  6,  0), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(-6,  6,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(0,  6,  6), Vec3f(0), Vec3f(1)),
-  //  Transform(Vec3f(6,  6,  6), Vec3f(0), Vec3f(1))
-  //};
-  //
-  //for (const Transform& transform : cube_transforms) {
-  //  auto cube = std::make_unique<Object>(transform, cube_mesh);
-  //  scene.objects.push_back(std::move(cube));
-  //}
 }
 
 int main() {
@@ -121,8 +77,8 @@ int main() {
     camera->aspect_ratio((float)scene.settings.image_width / (float)scene.settings.image_height);
 
     // TODO: Replace with keyframes on the camera object.
-    camera->transform.translate(Vec3f(2, 2, 2));
-    camera->transform.rotate(Vec3f(float(-std::atan(1.0 / sqrt(2))), float(M_PI_4), 0));
+    camera->transform.translate(Vec3f(1.5f, 2.5f, 4));
+    camera->transform.rotate_locally(Vec3f(-0.4f, 0.4f, 0));
 
     scene.objects.push_back(camera);
     scene.main_camera = camera;

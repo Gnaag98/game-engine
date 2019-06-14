@@ -43,6 +43,7 @@ public:
   static Matrix44f translation(float x, float y, float z);
   Matrix44f& translate(const Vec3f& translation);
   Matrix44f& translate(float x, float y, float z);
+  Matrix44f translation() const;
 
   static Matrix44f rotation_x(float angle);
   static Matrix44f rotation_y(float angle);
@@ -62,6 +63,7 @@ public:
   Matrix44f& scale(const Vec3f& scalar);
   Matrix44f& scale(float x, float y, float z);
 
+  Matrix44f rotation_and_scale() const;
 public:
   //  Print matrix to ostream.
   friend std::ostream& operator<<(std::ostream& s, const Matrix44f& m);
