@@ -10,4 +10,8 @@ Triangle::Triangle(int v_0, int v_1, int v_2, std::vector<Vertex>& _verticies,
   : verticies{ &_verticies.at(v_0), &_verticies.at(v_1), &_verticies.at(v_2) },
     vertex_indecies{v_0, v_1, v_2},
     normals{ &_normals.at(n_0), &_normals.at(n_1), &_normals.at(n_2) },
-    normal_indecies{ n_0, n_1, n_2 } {}
+    normal_indecies{ n_0, n_1, n_2 } {
+  diffusions[0] = Color::BLACK;
+  diffusions[1] = Color::BLACK;
+  diffusions[2] = Color::BLACK;
+}

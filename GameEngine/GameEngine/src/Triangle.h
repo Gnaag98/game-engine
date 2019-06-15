@@ -10,6 +10,7 @@ class Triangle {
 public:
   std::array<Vertex*, 3> verticies;
   std::array<Vec3f*, 3> normals;
+  std::array<Color, 3> diffusions;
 //private:
   const std::array<int, 3> vertex_indecies;
   const std::array<int, 3> normal_indecies;

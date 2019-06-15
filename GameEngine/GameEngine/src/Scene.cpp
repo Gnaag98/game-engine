@@ -135,6 +135,7 @@ auto Scene::render() -> int {
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
+      reset_image(frame_buffer, subpixel_buffer, depth_buffer);
       update();
       draw(frame_buffer, subpixel_buffer, depth_buffer, *camera);
 
@@ -160,7 +161,7 @@ auto Scene::render() -> int {
   return 0;
 }
 
-// Movement, animation, physics, etc.
+// Movement, lighting, physics, etc.
 void Scene::update() {
   // TODO: Add animation control.
 
@@ -169,13 +170,22 @@ void Scene::update() {
       object->transform = object->animation->step();
     }
   }
+
+  for (auto& potential_light : objects) {
+    if (auto light = dynamic_cast<Light*>(potential_light.get())) {
+      for (auto& object : objects) {
+        if (object->mesh) {
+          light->illuminate(*object);
+        }
+      }
+    }
+  }
 }
 
 void Scene::draw(std::vector<Color255>& frame_buffer,
                  std::vector<Color>& subpixel_buffer,
                  std::vector<float>& depth_buffer,
                  const Camera& camera) {
-  reset_image(frame_buffer, subpixel_buffer, depth_buffer);
   for (auto& object : objects) {
     if (object->mesh) {
       camera.project_object(*object, settings.image_width, settings.image_height);
@@ -212,4 +222,15 @@ void Scene::reset_image(std::vector<Color255>& frame_buffer,
   //  XXX: Hardcoded value for background.
   std::fill(subpixel_buffer.begin(), subpixel_buffer.end(), settings.background_color);
   std::fill(depth_buffer.begin(), depth_buffer.end(), INFINITY);
+
+  // Reset the visibility of each object.
+  for (auto& object : objects) {
+    if (object->mesh) {
+      for (auto& triangle : object->mesh->triangles) {
+        triangle.diffusions[0] = Color::BLACK;
+        triangle.diffusions[1] = Color::BLACK;
+        triangle.diffusions[2] = Color::BLACK;
+      }
+    }
+  }
 }

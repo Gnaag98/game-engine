@@ -94,26 +94,15 @@ void Rasterizer::render_triangle(const Triangle& triangle,
     (*triangle.normals[2] * transform.local_to_world_matrix()).normalize()
   };
 
-  // Experimental lights.
-  Vec3f light_direction(-3.0f, -0.7f, -1.7f);
-  light_direction.normalize();
-
-  // Diffuse surface color.
-  //float albeto = 0.18f;
-  //float light_intensity = 17;
-  //float diffusion = albeto / M_PI * light_intensity * std::max(0.0f, normals_world[0].dot(-light_direction));
-
-  // Simplified version (without albeto and intensity).
-  float diffusion = std::max(0.0f, normals_world[0].dot(-light_direction));
-
-  //std::cout << "\n  Normal:\t\t" << normals_world[0] << '\n' << "  Light direction:\t" << light_direction << '\n';
-  //std::cout << "  Diffusion\t\t: " << diffusion << "\n\n";
-
   auto colors = std::array<Color, 3>{
-    triangle.verticies[0]->color,
-    triangle.verticies[1]->color,
-    triangle.verticies[2]->color
+    triangle.diffusions[0],
+    triangle.diffusions[1],
+    triangle.diffusions[2]
   };
+
+  colors[0].constrain();
+  colors[1].constrain();
+  colors[2].constrain();
 
   // TEMP: temporary texture test (checker board).
   auto st0 = Vec2f{ 1, 0 };
@@ -137,31 +126,6 @@ void Rasterizer::render_triangle(const Triangle& triangle,
     colors[2].r /= positions[2].z;
     colors[2].g /= positions[2].z;
     colors[2].b /= positions[2].z;
-
-    // Experimental lights.
-    //std::cout << "    r: " << colors[0].r << '\n';
-    //std::cout << "    g: " << colors[0].g << '\n';
-    //std::cout << "    b: " << colors[0].b << '\n';
-    //
-    //std::cout << "    r: " << colors[1].r << '\n';
-    //std::cout << "    g: " << colors[1].g << '\n';
-    //std::cout << "    b: " << colors[1].b << '\n';
-    //
-    //std::cout << "    r: " << colors[2].r << '\n';
-    //std::cout << "    g: " << colors[2].g << '\n';
-    //std::cout << "    b: " << colors[2].b << "\n\n";
-
-    colors[0].r *= diffusion;
-    colors[0].g *= diffusion;
-    colors[0].b *= diffusion;
-
-    colors[1].r *= diffusion;
-    colors[1].g *= diffusion;
-    colors[1].b *= diffusion;
-
-    colors[2].r *= diffusion;
-    colors[2].g *= diffusion;
-    colors[2].b *= diffusion;
 
     // TEMP: temporary texture test (checker board).
     st0[0] /= positions[0].z;
