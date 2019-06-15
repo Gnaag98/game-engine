@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-Transform Animation::step() {
+auto Animation::step() -> Transform {
   auto result = Transform{};
   if (!keyframes.empty()) {
     if (current_keyframe == 0) {

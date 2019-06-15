@@ -49,15 +49,18 @@ public:
   auto local_to_world_matrix() const -> Matrix44f;
   auto world_to_local_matrix() const -> Matrix44f;
 
+  [[nodiscard]]
   auto right() const -> Vec3f;
+  [[nodiscard]]
   auto up() const -> Vec3f;
+  [[nodiscard]]
   auto forward() const -> Vec3f;
 
-  Transform& lerp_locally(const Transform& start, const Transform& end,
+  auto lerp_locally(const Transform& start, const Transform& end,
                           float percent,
                           bool is_translating = true,
                           bool is_rotating = true,
-                          bool is_scaling = true);
+                          bool is_scaling = true) -> Transform&;
 private:
   void update_local_matrix();
 };

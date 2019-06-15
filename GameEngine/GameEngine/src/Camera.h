@@ -12,31 +12,37 @@
 // TODO: Inherit from Object.
 class Camera : public Object {
 private:
+  struct Canvas {
+    float top, right, bottom, left;
+  };
+
+private:
   static const float S_DEFAULT_NEAR;
   static const float S_DEFAULT_FAR;
   static const float S_DEFAULT_ASPECT_RATIO;
   static const float S_DEFAULT_FOV;
 
-//public:
-//  Matrix44f world_to_camera;
 private:
   float m_fov;
   float m_aspect_ratio;
 public:
-  //  TEMP: near_clipping_plane is used outside the class, therefore public.
+  // TEMP: near_clipping_plane is used outside the class, therefore public.
   float near_clipping_plane, far_clipping_plane;
 private:
-  float canvas_top, canvas_right, canvas_bottom, canvas_left;
+  Canvas m_canvas;
 
 public:
   Camera();
-  Camera(float fov_horizontal, float aspect_ratio,
-         float near = S_DEFAULT_NEAR, float far = S_DEFAULT_FAR);
+  Camera(const float fov_horizontal, const float aspect_ratio,
+         const float near_clipping_plane = S_DEFAULT_NEAR,
+         const float far_clipping_plane = S_DEFAULT_FAR);
 
-  float fov() const;
-  void fov(const float fov_horizontal);
-  float aspect_ratio() const;
-  void aspect_ratio(float aspect_ratio);
+  [[nodiscard]]
+  auto fov() const -> float;
+  auto fov(const float fov_horizontal) -> Camera&;
+  [[nodiscard]]
+  auto aspect_ratio() const -> float;
+  auto aspect_ratio(const float aspect_ratio) -> Camera&;
 
   void project_object(Object& object,
                       const int image_width,

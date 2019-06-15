@@ -54,52 +54,47 @@ Color::Color(const float red, const float green, const float blue)
   : r{ red }, g{ green }, b{ blue } {
 }
 
-Color& Color::operator=(const Color255& color) {
+auto Color::operator=(const Color255& color) -> Color& {
   r = color.r / 255.0f, g = color.g / 255.0f, b = color.b / 255.0f;
   return *this;
 }
 
 void Color::constrain() {
-  const float magnitude_squared = r * r + g * g + b * b;
+  const auto magnitude_squared = r * r + g * g + b * b;
 
   // The square of a magnitude can't be negative.
   assert(magnitude_squared >= 0);
 
   if (magnitude_squared > 1) {
-    float inv_magnitude = 1 / std::sqrt(magnitude_squared);
+    auto inv_magnitude = 1.0f / std::sqrt(magnitude_squared);
     r *= inv_magnitude, g *= inv_magnitude, b *= inv_magnitude;
   }
 }
 
-Color& Color::operator+=(const Color& other) {
+auto Color::operator+=(const Color& other) -> Color& {
   r += other.r, g += other.g, b += other.b;
   return *this;
 }
 
-Color& Color::operator*=(const Color& other) {
+auto Color::operator*=(const Color& other) -> Color& {
   r *= other.r, g *= other.g, b *= other.b;
   return *this;
 }
 
-Color& Color::operator*=(const Vec3f& vector) {
-  r *= vector.x, g *= vector.y, b *= vector.z;
-  return *this;
-}
-
-Color& Color::operator*=(const float scalar) {
+auto Color::operator*=(const float scalar) -> Color& {
   r *= scalar, g *= scalar, b *= scalar;
   return *this;
 }
 
-Color operator*(Color lhs, const Color& rhs) {
+auto operator*(Color lhs, const Color& rhs) -> Color {
   return std::move(lhs *= rhs);
 }
 
-Color operator*(Color color, const float scalar) {
+auto operator*(Color color, const float scalar) -> Color {
   return std::move(color *= scalar);
 }
 
-Color operator*(const float scalar, Color color) {
+auto operator*(const float scalar, Color color) -> Color {
   return std::move(color *= scalar);
 }
 

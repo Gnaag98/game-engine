@@ -5,7 +5,7 @@
 #include "Transform.h"
 #include "Mesh.h"
 
-Object::Object(const Transform& _transform) : transform(_transform) {}
+Object::Object(const Transform& t) : transform{ t } {}
 
 auto Object::parent() const -> Object* {
   return m_parent;

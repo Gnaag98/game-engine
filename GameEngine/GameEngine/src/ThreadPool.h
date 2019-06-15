@@ -24,10 +24,11 @@ private:
   std::atomic<bool> m_is_destructing = false;
 
 public:
-  ThreadPool(int thread_count);
+  ThreadPool(const int thread_count);
   ~ThreadPool();
 
-  std::future<void> add_task(std::function<void(int)>&& workload);
+  [[nodiscard]]
+  auto add_task(std::function<void(int)>&& workload) -> std::future<void>;
 private:
-  void work(int thread_id);
+  void work(const int thread_id);
 };

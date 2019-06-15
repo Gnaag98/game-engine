@@ -16,125 +16,90 @@ const float Camera::S_DEFAULT_FAR = INFINITY;
 const float Camera::S_DEFAULT_ASPECT_RATIO = 4.0f / 3.0f;
 const float Camera::S_DEFAULT_FOV = 70.0f;
 
-//  TEMP: define.
-//#define IS_CLOCKING
-
 Camera::Camera()
-  : m_fov(S_DEFAULT_FOV),
-    m_aspect_ratio(S_DEFAULT_ASPECT_RATIO),
-    near_clipping_plane(S_DEFAULT_NEAR),
-    far_clipping_plane(S_DEFAULT_FAR)
-     {
-  const float fov_radians = m_fov * (float)M_PI / 180.0f;
-  canvas_right = std::tan(fov_radians / 2.0f) * near_clipping_plane;
-  canvas_top = canvas_right / m_aspect_ratio;
-  canvas_left = -canvas_right;
-  canvas_bottom = -canvas_top;
-}
-
-Camera::Camera(float fov_horizontal, float aspect_ratio,
-               float near, float far)
-  : m_fov(fov_horizontal),
-    m_aspect_ratio(aspect_ratio),
-    near_clipping_plane(near),
-    far_clipping_plane(far)
-     {
+  : m_fov{ S_DEFAULT_FOV },
+    m_aspect_ratio{ S_DEFAULT_ASPECT_RATIO },
+    near_clipping_plane{ S_DEFAULT_NEAR },
+    far_clipping_plane{ S_DEFAULT_FAR } {
   set_canvas();
 }
 
-float Camera::fov() const {
+Camera::Camera(const float fov_horizontal, const float aspect_ratio,
+               const float near, const float far)
+  : m_fov{ fov_horizontal },
+    m_aspect_ratio{ aspect_ratio },
+    near_clipping_plane{ near },
+    far_clipping_plane{ far } {
+  set_canvas();
+}
+
+auto Camera::fov() const -> float {
   return m_fov;
 }
 
-void Camera::fov(float fov_horizontal) {
+auto Camera::fov(const float fov_horizontal) -> Camera& {
   m_fov = fov_horizontal;
   set_canvas();
+  return *this;
 }
 
-float Camera::aspect_ratio() const {
+auto Camera::aspect_ratio() const -> float {
   return m_aspect_ratio;
 }
 
-void Camera::aspect_ratio(float ratio)  {
+auto Camera::aspect_ratio(const float ratio) -> Camera& {
   m_aspect_ratio = ratio;
   set_canvas();
+  return *this;
 }
 
 void Camera::project_object(Object& object,
                             const int image_width,
                             const int image_height) const {
-  //std::cout << "    Projecting object...\n";
-  //auto timer_start = std::chrono::high_resolution_clock::now();
   if (!object.mesh) return;
 
   for (Vertex& vertex : object.mesh->verticies) {
     project_vertex(vertex, object.transform, image_width, image_height);
   }
-
-  //auto timer_end = std::chrono::high_resolution_clock::now();
-  //std::chrono::duration<double, std::milli> timer_duration = timer_end - timer_start;
-  //std::cout << "    Done projecting object. It took " << timer_duration.count() << " ms\n";
 }
 
 void Camera::project_vertex(Vertex& vertex,
                             const Transform& vertex_transform,
                             const int image_width,
                             const int image_height) const {
-  //std::cout << "    Projecting vertex...\n";
-  //auto timer_start = std::chrono::high_resolution_clock::now();
+  // World Space -> Camera Space.
+  const auto point_camera = vertex.position
+                            * vertex_transform.local_to_world_matrix()
+                            * transform.world_to_local_matrix();
 
-  //std::cout << "\n\nvertex->position_world: " << vertex->position_world << "\n";
-  //std::cout << "vertex->position: " << vertex.position << "\n";
+  // Camera Space -> Screen Space (Canvas).
+  const auto point_screen = [&] {
+    auto point_screen = Vec2f{};
+    point_screen.x = point_camera.x / std::abs(point_camera.z) * near_clipping_plane;
+    point_screen.y = point_camera.y / std::abs(point_camera.z) * near_clipping_plane;
+    return point_screen;
+  }();
 
-  //  World Space -> Camera Space.
-  Vec3f point_camera = vertex.position * vertex_transform.local_to_world_matrix() * transform.world_to_local_matrix();
+  // Screen Space -> NDC Space (-1, 1).
+  const auto point_ndc = [&] {
+    auto point_ndc = Vec2f{};
+    point_ndc.x = 2 * point_screen.x / (m_canvas.right - m_canvas.left)
+                  - (m_canvas.right + m_canvas.left) / (m_canvas.right - m_canvas.left);
+    point_ndc.y = 2 * point_screen.y / (m_canvas.top - m_canvas.bottom)
+                  - (m_canvas.top + m_canvas.bottom) / (m_canvas.top - m_canvas.bottom);
+    return point_ndc;
+  }();
 
-  //std::cout << "point_camera: " << point_camera << "\n";
-
-  //  Camera Space -> Screen Space (Canvas).
-  Vec2f point_screen;
-  /*  CHANGED: Now dividing by abs(z) to prevent x and y from switching signs.
-   *           If the point is behind the camera then it's z value will be
-   *           Negative, however I just care about the absolute distance. */
-  //point_screen.x = point_camera.x / -point_camera.z * near_clipping_plane;
-  //point_screen.y = point_camera.y / -point_camera.z * near_clipping_plane;
-  point_screen.x = point_camera.x / std::abs(point_camera.z) * near_clipping_plane;
-  point_screen.y = point_camera.y / std::abs(point_camera.z) * near_clipping_plane;
-
-  //std::cout << "point_screen: " << point_screen << "\n";
-
-  //  Screen Space -> NDC Space (-1, 1).
-  Vec2f point_ndc;
-  point_ndc.x = 2 * point_screen.x / (canvas_right - canvas_left) -
-    (canvas_right + canvas_left) / (canvas_right - canvas_left);
-  point_ndc.y = 2 * point_screen.y / (canvas_top - canvas_bottom) -
-    (canvas_top + canvas_bottom) / (canvas_top - canvas_bottom);
-
-  //std::cout << "point_ndc: " << point_ndc << "\n";
-
-//  NDC Space -> Raster Space.
-  //Vec3f point_raster;
-  //point_raster.x = (point_ndc.x + 1.0f) / 2.0f * image_width;
-  //point_raster.y = (1.0f - point_ndc.y) / 2.0f * image_height;
-  //point_raster.z = -point_camera.z;
-  //
-  //return point_raster;
+  // NDC Space -> Raster Space.
   vertex.position_projected.x = (point_ndc.x + 1.0f) / 2.0f * image_width;
   vertex.position_projected.y = (1.0f - point_ndc.y) / 2.0f * image_height;
   vertex.position_projected.z = -point_camera.z;
-
-  //std::cout << "vertex->position_projected: " << vertex.position_projected << "\n\n\n";
-
-
-  //auto timer_end = std::chrono::high_resolution_clock::now();
-  //std::chrono::duration<double, std::milli> timer_duration = timer_end - timer_start;
-  //std::cout << "    Done projecting vertex. It took " << timer_duration.count() << " ms\n";
 }
 
 void Camera::set_canvas() {
-  const float FOV_RADIANS = float(m_fov * M_PI / 180.0);
-  canvas_right = std::tan(FOV_RADIANS / 2.0f) * near_clipping_plane;
-  canvas_top = canvas_right / m_aspect_ratio;
-  canvas_left = -canvas_right;
-  canvas_bottom = -canvas_top;
+  const auto fov_radians = m_fov * float(M_PI / 180.0);
+  m_canvas.right = std::tan(fov_radians / 2.0f) * near_clipping_plane;
+  m_canvas.top = m_canvas.right / m_aspect_ratio;
+  m_canvas.left = -m_canvas.right;
+  m_canvas.bottom = -m_canvas.top;
 }

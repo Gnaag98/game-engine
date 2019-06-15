@@ -21,9 +21,9 @@ public:
   explicit Object(const Transform& transform);
 
   Object(const Object& other) = default;
+  auto operator=(const Object& other) -> Object& = default;
   Object(Object&&) = default;
-  Object& operator=(const Object& other) = default;
-  Object& operator=(Object&&) = default;
+  auto operator=(Object&&) -> Object& = default;
   virtual ~Object() = default;
 
   [[nodiscard]]

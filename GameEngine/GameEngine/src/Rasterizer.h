@@ -57,16 +57,17 @@ private:
                        std::vector<Color255>& frame_buffer,
                        std::vector<Color>& subpixel_buffer,
                        const int anti_aliasing) const;
-  float edge_function(const Vec2f& point,
+  [[nodiscard]]
+  auto edge_function(const Vec2f& point,
                       const Vec2f& vertex_a,
-                      const Vec2f& vertex_b) const;
+                      const Vec2f& vertex_b) const -> float;
   void compute_bounding_box(const std::array<Vec3f, 3> vectors,
                             const int image_width, const int image_height,
                             Vec2i& min, Vec2i& max) const;
 private:
-  bool top_left_rule(float weight, Vec2f edge) const;
-  float compute_depth(const std::array<Vec3f, 3> vectors,
-                      const float weights[]) const;
-  int fast_floor(float value) const;
-  int fast_ceil(float value) const;
+  [[nodiscard]]
+  auto top_left_rule(const float weight, const Vec2f& edge) const -> bool;
+  [[nodiscard]]
+  auto compute_depth(const std::array<Vec3f, 3> vectors,
+                     const std::array<float, 3> weights) const -> float;
 };

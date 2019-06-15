@@ -33,7 +33,7 @@ private:
 public:
   explicit Scene(std::shared_ptr<MyRenderer> renderer);
 
-  auto render()->int;
+  auto render() -> int;
 
 private:
   void update();

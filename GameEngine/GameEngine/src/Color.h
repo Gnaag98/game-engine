@@ -27,20 +27,22 @@ public:
   explicit Color(float color);
   Color(float red, float green, float blue);
 
-  Color& operator=(const Color255& color);
+  auto operator=(const Color255& color) -> Color&;
 
   // Normalize if any one of the colors are greater than 1.0.
   void constrain();
 
-  Color& operator+=(const Color& other);
-  Color& operator*=(const Color& other);
-  Color& operator*=(const Vec3f& vector);
-  Color& operator*=(const float scalar);
+  auto operator+=(const Color& other) -> Color&;
+  auto operator*=(const Color& other) -> Color&;
+  auto operator*=(const float scalar) -> Color&;
 };
 
-Color operator*(Color lhs, const Color& rhs);
-Color operator*(Color color, const float scalar);
-Color operator*(const float scalar, Color color);
+[[nodiscard]]
+auto operator*(Color lhs, const Color& rhs) -> Color;
+[[nodiscard]]
+auto operator*(Color color, const float scalar) -> Color;
+[[nodiscard]]
+auto operator*(const float scalar, Color color) -> Color;
 
 class Color255 {
 public:

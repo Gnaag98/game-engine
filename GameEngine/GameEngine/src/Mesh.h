@@ -15,14 +15,12 @@ public:
 
 public:
   Mesh() = default;
-  explicit Mesh(const std::string& filename);
-
+  explicit Mesh(const std::string& file_path);
   Mesh(const Mesh& other);
-  Mesh& operator=(const Mesh& other);
+  auto operator=(const Mesh& other) -> Mesh&;
   Mesh(Mesh&&) = default;
-  Mesh& operator=(Mesh&&) = default;
+  auto operator=(Mesh&&) -> Mesh& = default;
   virtual ~Mesh() = default;
 private:
-  // File must reside in /obj folder.
-  void parse_obj_file(const std::string& filename);
+  void parse_obj_file(const std::string& file_path);
 };

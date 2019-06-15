@@ -86,23 +86,7 @@ int main() {
 
   // Add objects to the scene.
   create_objects(scene);
-
-  // TODO: Create keyframes for individual objects instead.
-  //// Camera animation.
-  //std::cout << "Creating Keyframes...\n";
-  //std::vector<Keyframe> keyframes;
-  //Keyframe keyframe;
-  //
-  //keyframe.frame = 0;
-  //keyframe.transform.position(Vec3f(2, 2, 2));
-  //keyframe.transform.rotation(Vec3f(-std::atan(1.0/sqrt(2)), M_PI_4, 0));
-  //keyframe.transform.scale(Vec3f(1));
-  //keyframes.push_back(keyframe);
-  //std::cout << "Done creating Keyframes.\n";
   
   // Render scene.
   return scene.render();
-
-  //std::cout << "Press Enter to exit.";
-  //std::cin.get();
 }

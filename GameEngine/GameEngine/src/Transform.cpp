@@ -144,11 +144,11 @@ auto Transform::forward() const -> Vec3f {
   return Vec3f::forward() * rotation_matrix();
 }
 
-Transform& Transform::lerp_locally(const Transform& start, const Transform& end,
+auto Transform::lerp_locally(const Transform& start, const Transform& end,
                                    const float percent,
                                    const bool is_translating,
                                    const bool is_rotating,
-                                   const bool is_scaling) {
+                                   const bool is_scaling) -> Transform& {
   if (is_translating) m_position.lerp(start.local_position(), end.local_position(), percent);
   if (is_rotating) m_rotation.lerp(start.local_euler_angles(), end.local_euler_angles(), percent);
   if (is_scaling) m_scale.lerp(start.local_scale(), end.local_scale(), percent);

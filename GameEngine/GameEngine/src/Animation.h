@@ -13,5 +13,6 @@ public:
   bool is_looping = true;
 
 public:
-  Transform step();
+  // Not [[nodiscard]] to be able to step every frame but only render, for example, every fourth step.
+  auto step() -> Transform;
 };

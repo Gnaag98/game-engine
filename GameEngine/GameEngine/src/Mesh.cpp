@@ -6,20 +6,20 @@
 #include <sstream>
 #include <stdexcept>
 
-Mesh::Mesh(const std::string& filename) {
-  parse_obj_file(filename);
+Mesh::Mesh(const std::string& file_path) {
+  parse_obj_file(file_path);
 
-  // XXX: Hardcoded vertex color value.
+  // XXX: Hardcoded default vertex color value.
   for (Vertex& vertex : verticies) {
     vertex.color = Color::WHITE;
   }
 }
 
 Mesh::Mesh(const Mesh& other)
-  : verticies(other.verticies),
-    normals(other.normals) {
+  : verticies{ other.verticies },
+    normals{ other.normals } {
   triangles.reserve(other.triangles.size());
-  for (const Triangle& other_triangle : other.triangles) {
+  for (const auto& other_triangle : other.triangles) {
     triangles.emplace_back(other_triangle.vertex_indecies[0],
                            other_triangle.vertex_indecies[1],
                            other_triangle.vertex_indecies[2],
@@ -31,11 +31,11 @@ Mesh::Mesh(const Mesh& other)
   }
 }
 
-Mesh& Mesh::operator=(const Mesh& other) {
+auto Mesh::operator=(const Mesh& other) -> Mesh& {
   verticies = other.verticies;
   normals = other.normals;
   triangles.reserve(other.triangles.size());
-  for (const Triangle& other_triangle : other.triangles) {
+  for (const auto& other_triangle : other.triangles) {
     triangles.emplace_back(other_triangle.vertex_indecies[0],
                            other_triangle.vertex_indecies[1],
                            other_triangle.vertex_indecies[2],
@@ -48,26 +48,25 @@ Mesh& Mesh::operator=(const Mesh& other) {
   return *this;
 }
 
-// File must reside in /obj folder.
-void Mesh::parse_obj_file(const std::string& filename) {
-  std::ifstream obj_stream(std::string("obj/") + filename + ".obj");
-  std::string line;
+void Mesh::parse_obj_file(const std::string& file_path) {
+  auto obj_stream = std::ifstream{ file_path };
+  auto line = std::string{};
 
   while (std::getline(obj_stream, line)) {
     if (line.empty() || line.at(0) == '#') continue;
 
-    std::istringstream line_stream(line);
-    std::string type;
+    auto line_stream = std::istringstream{ line };
+    auto type = std::string{};
     std::getline(line_stream, type, ' ');
 
     if (type == "v") {
-      Vec3f position;
+      auto position = Vec3f{};
       // TODO: Add error detection for the vertex input.
       line_stream >> position.x >> position.y >> position.z;
       verticies.emplace_back(position);
 
     } else if (type == "vn") {
-      Vec3f normal;
+      auto normal = Vec3f{};
       // TODO: Add error detection for the normal input.
       line_stream >> normal.x >> normal.y >> normal.z;
       normals.emplace_back(normal);
@@ -75,21 +74,22 @@ void Mesh::parse_obj_file(const std::string& filename) {
     } else if (type == "f") {
       std::vector<std::string> elements;
       { //  Scope to limit the existance of the temporary element string.
-        std::string element;
+        auto element = std::string{};
         while (std::getline(line_stream, element, ' ')) {
           elements.emplace_back(element);
         }
       }
 
-      std::vector<int> position_indicies;
-      std::vector<int> texture_indicies;
-      std::vector<int> normal_indicies;
+      auto position_indicies = std::vector<int>{};
+      auto texture_indicies = std::vector<int>{};
+      auto normal_indicies = std::vector<int>{};
 
       for (const std::string& element : elements) {
-        std::istringstream element_stream(element);
-        std::string position_index;
-        std::string texture_index;
-        std::string normal_index;
+        auto element_stream = std::istringstream{ element };
+        auto position_index = std::string{};
+        auto texture_index = std::string{};
+        auto normal_index = std::string{};
+
         std::getline(element_stream, position_index, '/');
         std::getline(element_stream, texture_index, '/');
         std::getline(element_stream, normal_index, '/');

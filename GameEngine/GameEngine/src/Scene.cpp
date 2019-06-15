@@ -26,8 +26,7 @@ Scene::Scene(std::shared_ptr<MyRenderer> renderer)
   assert(m_renderer);
 }
 
-auto Scene::render()->int {
-  // Unnecessary as I assert in the constructor, but better safe than sorry.
+auto Scene::render() -> int {
   if (!m_renderer) {
     std::cerr << "No renderer specified. Can't render scene as a result.\n";
     return -1;
@@ -40,11 +39,11 @@ auto Scene::render()->int {
   }
 
   // Buffers.
-  std::vector<Color255> frame_buffer(settings.image_width * settings.image_height);
-  std::vector<Color> subpixel_buffer(frame_buffer.size() * settings.anti_aliasing * settings.anti_aliasing);
-  std::vector<float> depth_buffer(subpixel_buffer.size());
-  std::vector<Vertex*> my_vertex_buffer;
-  std::vector<Triangle*> triangle_buffer;
+  auto frame_buffer     = std::vector<Color255>(settings.image_width * settings.image_height);
+  auto subpixel_buffer  = std::vector<Color>(frame_buffer.size() * settings.anti_aliasing * settings.anti_aliasing);
+  auto depth_buffer     = std::vector<float>(subpixel_buffer.size());
+  auto my_vertex_buffer = std::vector<Vertex*>();
+  auto triangle_buffer  = std::vector<Triangle*>();
 
   auto vertex_count = 0;
   auto triangle_count = 0;
@@ -59,28 +58,27 @@ auto Scene::render()->int {
 
   for (const auto& object : objects) {
     if (!object->mesh) continue;
-    for (Vertex& vertex : object->mesh->verticies) {
+    for (auto& vertex : object->mesh->verticies) {
       my_vertex_buffer.emplace_back(&vertex);
     }
-    for (Triangle& triangle : object->mesh->triangles) {
+    for (auto& triangle : object->mesh->triangles) {
       triangle_buffer.emplace_back(&triangle);
     }
   }
-
-  GLFWwindow* window;
 
  /* Initialize the library */
   if (!glfwInit())
     return -1;
 
   // Set version to 3.3 and use core mode instead of compatibility mode.
-  // Core mode rorces me to explicitly create a vertex array object.
+  // Core mode forces me to explicitly create a vertex array object.
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
+  auto window = glfwCreateWindow(settings.image_width * 2, settings.image_height * 2,
+                                 "Game Engine", NULL, NULL);
   if (!window) {
     glfwTerminate();
     return -1;
