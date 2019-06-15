@@ -1,37 +1,30 @@
 #pragma once
 
+#include <array>
 #include <ostream>
-
-#include "Matrix36.h"
 
 class Matrix33f {
 private:
-  float m[3][3] = {
-    {1, 0, 0},
-    {0, 1, 0},
-    {0, 0, 1}
+  using Row = std::array<float, 3>;
+
+private:
+  std::array<Row, 3> m {
+    Row{1, 0, 0},
+    Row{0, 1, 0},
+    Row{0, 0, 1}
   };
 
 public:
-  Matrix33f();
-  Matrix33f(const Matrix33f& other);
-  Matrix33f(float a, float b, float c,
-            float d, float e, float f,
-            float g, float h, float i);
-  //  Create a 2x2 matrix out of the right part of a 2x4 matrix. 
-  Matrix33f(const Matrix36f& other);
-  //  Copy assignment operator.
-  Matrix33f& operator=(const Matrix33f& other);
+  Matrix33f(const float m00, const float m01, const float m02,
+            const float m10, const float m11, const float m12,
+            const float m20, const float m21, const float m22);
 
-  //  Access operators.
-  const float* operator[](int i) const;
-  float* operator[](int i);
+  auto operator[](const int i) const -> const Row&;
+  auto operator[](const int i)       ->       Row&;
 
-  //  Determinant.
-  float det() const;
-  Matrix33f inverse() const;
+  // Determinant.
+  auto det() const -> float;
 
 public:
-  //  Print matrix to ostream.
-  friend std::ostream& operator<<(std::ostream& s, const Matrix33f& m);
+  friend auto operator<<(std::ostream& ostream, const Matrix33f& matrix) -> std::ostream&;
 };

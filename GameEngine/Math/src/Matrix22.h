@@ -1,40 +1,28 @@
 #pragma once
 
+#include <array>
 #include <ostream>
-
-#include "Matrix24.h"
 
 class Matrix22f {
 private:
-  float m[2][2] = {
-    {1, 0},
-    {0, 1}
+  using Row = std::array<float, 2>;
+
+private:
+  std::array<Row, 2> m = {
+    Row{1, 0},
+    Row{0, 1}
   };
 
 public:
-  Matrix22f();
-  Matrix22f(const Matrix22f& other);
-  Matrix22f(float a, float b,
-            float c, float d);
-  //  Create a 2x2 matrix out of the right part of a 2x4 matrix. 
-  Matrix22f(const Matrix24f& other);
-  //  Copy assignment operator.
-  Matrix22f& operator=(const Matrix22f& other);
+  Matrix22f(const float m00, const float m01,
+            const float m10, const float m11);
 
-  //  Access operators.
-  const float* operator[](int i) const;
-  float* operator[](int i);
+  auto operator[](const int i) const -> const Row&;
+  auto operator[](const int i)       ->       Row&;
 
-  //  Determinant.
-  float det() const;
-  Matrix22f inverse() const;
+  // Determinant.
+  auto det() const -> float;
 
-  /*  TODO:
-   *
-   *  Transpose.
-   *  Multiplication.
-  */
 public:
-  //  Print matrix to ostream.
-  friend std::ostream& operator<<(std::ostream& s, const Matrix22f& m);
+  friend auto operator<<(std::ostream& ostream, const Matrix22f& matrix) -> std::ostream&;
 };

@@ -18,13 +18,7 @@
     <ClCompile Include="src\Matrix22.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Matrix24.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Matrix33.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Matrix36.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Matrix44.cpp">
@@ -44,13 +38,7 @@
     <ClInclude Include="src\Matrix22.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Matrix24.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Matrix33.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Matrix36.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Matrix44.h">

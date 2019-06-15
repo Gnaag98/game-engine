@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <ostream>
 
 #include "Matrix48.h"
@@ -7,64 +8,78 @@
 
 class Matrix44f {
 private:
-  float m[4][4] = {
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1}
+  using Row = std::array<float, 4>;
+
+public:
+  [[nodiscard]]
+  static auto translation(const Vec3f& translation) -> Matrix44f;
+  [[nodiscard]]
+  static auto translation(const float x, const float y, const float z) -> Matrix44f;
+
+  [[nodiscard]]
+  static auto rotation_x(const float angle) -> Matrix44f;
+  [[nodiscard]]
+  static auto rotation_y(const float angle) -> Matrix44f;
+  [[nodiscard]]
+  static auto rotation_z(const float angle) -> Matrix44f;
+  [[nodiscard]]
+  static auto rotation(const Vec3f& rotation) -> Matrix44f;
+  [[nodiscard]]
+  static auto rotation(const float x, const float y, const float z) -> Matrix44f;
+
+  [[nodiscard]]
+  static auto scalar(const float scalar) -> Matrix44f;
+  [[nodiscard]]
+  static auto scalar(const Vec3f& scalar) -> Matrix44f;
+  [[nodiscard]]
+  static auto scalar(float x, const float y, const float z) -> Matrix44f;
+
+private:
+  std::array<Row, 4> m = {
+    Row{1, 0, 0, 0},
+    Row{0, 1, 0, 0},
+    Row{0, 0, 1, 0},
+    Row{0, 0, 0, 1}
   };
 
 public:
-  explicit Matrix44f(bool is_unit_matrix = true);
-  Matrix44f(const Matrix44f& other);
-  Matrix44f(float a, float b, float c, float d,
-            float e, float f, float g, float h,
-            float i, float j, float k, float l,
-            float n, float o, float p, float q);
-  //  Create a 2x2 matrix out of the right part of a 2x4 matrix. 
-  Matrix44f(const Matrix48f& other);
-  //  Copy assignment operator.
-  Matrix44f& operator=(const Matrix44f& other);
+  explicit Matrix44f(const bool is_unit_matrix = true);
+  Matrix44f(const float m00, const float m01, const float m02, const float m03,
+            const float m10, const float m11, const float m12, const float m13,
+            const float m20, const float m21, const float m22, const float m23,
+            const float m30, const float m31, const float m32, const float m33);
 
-  //  Access operators.
-  const float* operator[](int i) const;
-  float* operator[](int i);
+  auto operator[](int i) const -> const Row&;
+  auto operator[](int i)       ->       Row&;
 
-  //  Determinant.
-  float det() const;
-  Matrix44f inverse() const;
+  // Determinant.
+  [[nodiscard]]
+  auto det() const -> float;
+  [[nodiscard]]
+  auto inverse() const -> Matrix44f;
 
-  //  Multiplication.
-  Matrix44f operator*(const Matrix44f& other) const;
-  Matrix44f& operator*=(const Matrix44f& other);
+  auto translate(const Vec3f& translation) -> Matrix44f&;
+  auto translate(const float x, const float y, const float z) -> Matrix44f&;
+  
+  auto rotate_x(const float angle) -> Matrix44f&;
+  auto rotate_y(const float angle) -> Matrix44f&;
+  auto rotate_z(const float angle) -> Matrix44f&;
+  auto rotate(const Vec3f& rotation) -> Matrix44f&;
+  auto rotate(const float x, const float y, const float z) -> Matrix44f&;
+  
+  auto scale(const float scalar) -> Matrix44f&;
+  auto scale(const Vec3f& scalar) -> Matrix44f&;
+  auto scale(const float x, const float y, const float z) -> Matrix44f&;
 
-  //  Transformations.
-  static Matrix44f translation(const Vec3f& translation);
-  static Matrix44f translation(float x, float y, float z);
-  Matrix44f& translate(const Vec3f& translation);
-  Matrix44f& translate(float x, float y, float z);
-  Matrix44f translation() const;
+  [[nodiscard]]
+  auto translation() const -> Matrix44f;
+  [[nodiscard]]
+  auto rotation_and_scale() const -> Matrix44f;
 
-  static Matrix44f rotation_x(float angle);
-  static Matrix44f rotation_y(float angle);
-  static Matrix44f rotation_z(float angle);
-  static Matrix44f rotation(const Vec3f& rotation);
-  static Matrix44f rotation(float x, float y, float z);
-  Matrix44f& rotate_x(float angle);
-  Matrix44f& rotate_y(float angle);
-  Matrix44f& rotate_z(float angle);
-  Matrix44f& rotate(const Vec3f& rotation);
-  Matrix44f& rotate(float x, float y, float z);
-
-  static Matrix44f scalar(float scalar);
-  static Matrix44f scalar(const Vec3f& scalar);
-  static Matrix44f scalar(float x, float y, float z);
-  Matrix44f& scale(float scalar);
-  Matrix44f& scale(const Vec3f& scalar);
-  Matrix44f& scale(float x, float y, float z);
-
-  Matrix44f rotation_and_scale() const;
+  auto operator*=(const Matrix44f& other) -> Matrix44f&;
 public:
-  //  Print matrix to ostream.
-  friend std::ostream& operator<<(std::ostream& s, const Matrix44f& m);
+  friend auto operator<<(std::ostream& ostream, const Matrix44f& matrix) -> std::ostream&;
 };
+
+[[nodiscard]]
+auto operator*(const Matrix44f& lhs, const Matrix44f& rhs) -> Matrix44f;

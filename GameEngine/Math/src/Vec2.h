@@ -6,39 +6,50 @@
 
 class Vec2f {
 public:
+  static auto right(const float scalar = 1) -> Vec2f;
+  static auto up(const float scalar = 1) -> Vec2f;
+
+public:
   float x, y;
 
   Vec2f();
-  Vec2f(float scalar);
-  Vec2f(float x, float y);
+  explicit Vec2f(const float scalar);
+  Vec2f(const float x, const float y);
   Vec2f(const Vec3f& other);
 
-  //  Access operators.
-  const float& operator[](int i) const;
-  float& operator[](int i);
+  auto operator[](const int i) const -> const float&;
+  auto operator[](const int i) -> float&;
 
-  Vec2f operator+(const Vec2f& other) const;
-  Vec2f operator-(const Vec2f& other) const;
+  auto magnitude() const -> float;
+  auto dot(const Vec2f& other) const -> float;
 
-  Vec2f operator*(const float scalar) const;
-  Vec2f operator/(const float scalar) const;
+  auto normalize()->Vec2f&;
 
-  //  Print matrix to ostream.
-  friend std::ostream& operator<<(std::ostream& s, const Vec2f& m);
+  auto operator+=(const Vec2f& other) -> Vec2f&;
+  auto operator-=(const Vec2f& other) -> Vec2f&;
+  auto operator*=(const float scalar) -> Vec2f&;
+  auto operator/=(const float scalar) -> Vec2f&;
+
+  friend auto operator<<(std::ostream& ostream, const Vec2f& matrix) -> std::ostream&;
 };
+
+auto operator+(Vec2f lhs, const Vec2f& rhs) -> Vec2f;
+auto operator-(Vec2f lhs, const Vec2f& rhs) -> Vec2f;
+auto operator-(Vec2f vector) -> Vec2f;
+auto operator*(Vec2f vector, const float scalar) -> Vec2f;
+auto operator*(const float scalar, Vec2f vector) -> Vec2f;
+auto operator/(Vec2f vector, const float scalar) -> Vec2f;
 
 class Vec2i {
 public:
   int x, y;
 
   Vec2i();
-  Vec2i(int scalar);
-  Vec2i(int x, int y);
+  Vec2i(const int scalar);
+  Vec2i(const int x, const int y);
 
-  //  Access operators.
-  const int& operator[](int i) const;
-  int& operator[](int i);
+  auto operator[](const int i) const -> const int&;
+  auto operator[](const int i) -> int&;
 
-  //  Print matrix to ostream.
-  friend std::ostream& operator<<(std::ostream& s, const Vec2i& m);
+  friend auto operator<<(std::ostream& ostream, const Vec2i& matrix) -> std::ostream&;
 };

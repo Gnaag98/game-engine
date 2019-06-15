@@ -77,6 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_USE_MATH_DEFINES;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>User32.lib;Gdi32.lib;Shell32.lib</AdditionalDependencies>
@@ -88,6 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -99,6 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_USE_MATH_DEFINES;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -114,6 +117,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -122,9 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Matrix22.cpp" />
-    <ClCompile Include="src\Matrix24.cpp" />
     <ClCompile Include="src\Matrix33.cpp" />
-    <ClCompile Include="src\Matrix36.cpp" />
     <ClCompile Include="src\Matrix44.cpp" />
     <ClCompile Include="src\Matrix48.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
@@ -132,9 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Matrix22.h" />
-    <ClInclude Include="src\Matrix24.h" />
     <ClInclude Include="src\Matrix33.h" />
-    <ClInclude Include="src\Matrix36.h" />
     <ClInclude Include="src\Matrix44.h" />
     <ClInclude Include="src\Matrix48.h" />
     <ClInclude Include="src\Vec2.h" />
