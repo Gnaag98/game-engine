@@ -94,9 +94,12 @@ void Mesh::parse_obj_file(const std::string& file_path) {
         std::getline(element_stream, texture_index, '/');
         std::getline(element_stream, normal_index, '/');
         // Converting to 0 based indexing by subtracting by 1.
-        position_indicies.emplace_back(std::stoi(position_index) - 1);
-        texture_indicies.emplace_back(std::stoi(texture_index) - 1);
-        normal_indicies.emplace_back(std::stoi(normal_index) - 1);
+        if (position_index.size() > 0)
+          position_indicies.emplace_back(std::stoi(position_index) - 1);
+        if (texture_index.size() > 0)
+          texture_indicies.emplace_back(std::stoi(texture_index) - 1);
+        if (normal_index.size() > 0)
+          normal_indicies.emplace_back(std::stoi(normal_index) - 1);
       }
 
       if (position_indicies.size() < 3) {
